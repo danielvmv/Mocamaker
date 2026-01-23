@@ -1,0 +1,1095 @@
+/* ==========================================================================
+   Mocamaker v2.0 - RCS Business Messaging Styles (Pixel-Perfect)
+   Based on Google Messages / RCS Business Messaging
+   ========================================================================== */
+
+/* RCS Variables */
+:root {
+    /* RCS Colors - Google Messages Style */
+    --rcs-bg: #FAFAFA;
+    --rcs-surface: #FFFFFF;
+    --rcs-bubble-outgoing: #1A73E8;
+    --rcs-bubble-outgoing-text: #FFFFFF;
+    --rcs-bubble-incoming: #FFFFFF;
+    --rcs-bubble-incoming-text: #202124;
+    --rcs-primary: #1A73E8;
+    --rcs-primary-light: #E3F2FD;
+    --rcs-text: #202124;
+    --rcs-text-secondary: #5F6368;
+    --rcs-text-tertiary: #80868B;
+    --rcs-border: #DADCE0;
+    --rcs-border-light: #E8EAED;
+    --rcs-success: #34A853;
+    --rcs-error: #D93025;
+
+    /* RCS Typography - Google Sans / Roboto */
+    --rcs-font: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --rcs-font-size: 15px;
+    --rcs-font-size-small: 12px;
+    --rcs-font-size-tiny: 11px;
+    --rcs-line-height: 1.4;
+
+    /* RCS Dimensions */
+    --rcs-bubble-radius: 20px;
+    --rcs-bubble-radius-small: 4px;
+    --rcs-card-radius: 16px;
+    --rcs-phone-width: 375px;
+    --rcs-phone-height: 667px;
+}
+
+/* ==========================================================================
+   Phone Container
+   ========================================================================== */
+
+.rcs-phone {
+    width: var(--rcs-phone-width);
+    height: var(--rcs-phone-height);
+    background: var(--rcs-bg);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    font-family: var(--rcs-font);
+}
+
+/* ==========================================================================
+   Status Bar
+   ========================================================================== */
+
+.rcs-status-bar {
+    height: 24px;
+    background: var(--rcs-surface);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--rcs-text);
+}
+
+.rcs-status-time {
+    font-weight: 600;
+}
+
+.rcs-status-icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.rcs-status-icons svg {
+    width: 16px;
+    height: 16px;
+    fill: var(--rcs-text);
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.rcs-header {
+    background: var(--rcs-surface);
+    padding: 8px 4px;
+    border-bottom: 1px solid var(--rcs-border-light);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.rcs-header-back {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.rcs-header-back:hover {
+    background: var(--rcs-border-light);
+}
+
+.rcs-header-back svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--rcs-text-secondary);
+}
+
+.rcs-header-avatar {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #1A73E8 0%, #4285F4 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.rcs-header-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.rcs-header-info {
+    flex: 1;
+    min-width: 0;
+    margin-left: 8px;
+}
+
+.rcs-header-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--rcs-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rcs-header-verified {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--rcs-font-size-small);
+    color: var(--rcs-primary);
+}
+
+.rcs-header-verified svg {
+    width: 14px;
+    height: 14px;
+    fill: var(--rcs-primary);
+}
+
+.rcs-header-menu {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.rcs-header-menu:hover {
+    background: var(--rcs-border-light);
+}
+
+.rcs-header-menu svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--rcs-text-secondary);
+}
+
+/* ==========================================================================
+   Chat Container
+   ========================================================================== */
+
+.rcs-chat {
+    flex: 1;
+    background: var(--rcs-bg);
+    padding: 12px 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* ==========================================================================
+   Message Bubbles
+   ========================================================================== */
+
+.rcs-message-wrapper {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+}
+
+.rcs-message-wrapper:hover .message-delete-btn {
+    opacity: 1;
+}
+
+.rcs-message {
+    display: flex;
+    flex-direction: column;
+    max-width: 80%;
+    animation: rcsMessageIn 0.3s ease-out;
+    animation-fill-mode: both;
+}
+
+/* Stagger Animation */
+.rcs-message:nth-child(1) { animation-delay: 0ms; }
+.rcs-message:nth-child(2) { animation-delay: 150ms; }
+.rcs-message:nth-child(3) { animation-delay: 300ms; }
+.rcs-message:nth-child(4) { animation-delay: 450ms; }
+.rcs-message:nth-child(5) { animation-delay: 600ms; }
+.rcs-message:nth-child(6) { animation-delay: 750ms; }
+.rcs-message:nth-child(7) { animation-delay: 900ms; }
+.rcs-message:nth-child(8) { animation-delay: 1050ms; }
+.rcs-message:nth-child(9) { animation-delay: 1200ms; }
+.rcs-message:nth-child(10) { animation-delay: 1350ms; }
+
+@keyframes rcsMessageIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Outgoing (Brand) Messages - Right aligned */
+.rcs-message--outgoing {
+    margin-left: auto;
+}
+
+/* Incoming (User) Messages - Left aligned */
+.rcs-message--incoming {
+    margin-right: auto;
+}
+
+/* Bubble Content */
+.rcs-bubble {
+    padding: 10px 14px;
+    border-radius: var(--rcs-bubble-radius);
+    font-family: var(--rcs-font);
+    font-size: var(--rcs-font-size);
+    line-height: var(--rcs-line-height);
+    position: relative;
+    word-wrap: break-word;
+}
+
+.rcs-message--outgoing .rcs-bubble {
+    background: var(--rcs-bubble-outgoing);
+    color: var(--rcs-bubble-outgoing-text);
+    border-bottom-right-radius: var(--rcs-bubble-radius-small);
+}
+
+.rcs-message--incoming .rcs-bubble {
+    background: var(--rcs-bubble-incoming);
+    color: var(--rcs-bubble-incoming-text);
+    border-bottom-left-radius: var(--rcs-bubble-radius-small);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.rcs-bubble-text {
+    display: block;
+}
+
+/* Message Footer (Time + Status) */
+.rcs-bubble-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    margin-top: 4px;
+    padding-left: 12px;
+    float: right;
+}
+
+.rcs-bubble-time {
+    font-family: var(--rcs-font);
+    font-size: var(--rcs-font-size-tiny);
+}
+
+.rcs-message--outgoing .rcs-bubble-time {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.rcs-message--incoming .rcs-bubble-time {
+    color: var(--rcs-text-secondary);
+}
+
+.rcs-bubble-status {
+    font-size: 14px;
+    line-height: 1;
+}
+
+.rcs-message--outgoing .rcs-bubble-status {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* ==========================================================================
+   Media Messages
+   ========================================================================== */
+
+.rcs-bubble--media {
+    padding: 0;
+    overflow: hidden;
+}
+
+.rcs-bubble--media .rcs-bubble-footer {
+    padding: 8px 14px 10px;
+    margin-top: 0;
+}
+
+.rcs-media-container {
+    position: relative;
+}
+
+.rcs-media-image {
+    width: 100%;
+    display: block;
+    max-height: 280px;
+    object-fit: cover;
+}
+
+/* Video */
+.rcs-video-container {
+    position: relative;
+    background: #000;
+}
+
+.rcs-video-thumb,
+.rcs-media-video {
+    width: 100%;
+    display: block;
+    max-height: 280px;
+    object-fit: contain;
+}
+
+.rcs-video-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 56px;
+    height: 56px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.rcs-video-play-btn:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.rcs-video-play-btn svg {
+    width: 28px;
+    height: 28px;
+    fill: white;
+    margin-left: 4px;
+}
+
+/* ==========================================================================
+   Audio Messages
+   ========================================================================== */
+
+.rcs-bubble--audio {
+    padding: 12px 14px;
+}
+
+.rcs-audio-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 200px;
+}
+
+.rcs-audio-play {
+    width: 40px;
+    height: 40px;
+    background: var(--rcs-primary);
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.rcs-audio-play:hover {
+    transform: scale(1.05);
+}
+
+.rcs-audio-play svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+    margin-left: 2px;
+}
+
+.rcs-audio-waveform {
+    flex: 1;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.rcs-message--outgoing .rcs-audio-waveform {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.rcs-audio-progress {
+    width: 0%;
+    height: 100%;
+    background: var(--rcs-primary);
+    border-radius: 2px;
+    transition: width 0.1s linear;
+}
+
+.rcs-message--outgoing .rcs-audio-progress {
+    background: white;
+}
+
+.rcs-audio-duration {
+    font-size: var(--rcs-font-size-small);
+    color: var(--rcs-text-secondary);
+    flex-shrink: 0;
+}
+
+.rcs-message--outgoing .rcs-audio-duration {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* ==========================================================================
+   Document Messages
+   ========================================================================== */
+
+.rcs-bubble--document {
+    padding: 12px 14px;
+}
+
+.rcs-document-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+}
+
+.rcs-document-icon {
+    width: 48px;
+    height: 56px;
+    background: var(--rcs-border-light);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.rcs-message--outgoing .rcs-document-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.rcs-document-icon svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--rcs-text-secondary);
+}
+
+.rcs-message--outgoing .rcs-document-icon svg {
+    fill: white;
+}
+
+.rcs-document-ext {
+    font-size: 8px;
+    font-weight: 700;
+    color: var(--rcs-text-secondary);
+    margin-top: -4px;
+    text-transform: uppercase;
+}
+
+.rcs-message--outgoing .rcs-document-ext {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.rcs-document-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.rcs-document-name {
+    display: block;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--rcs-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rcs-message--outgoing .rcs-document-name {
+    color: white;
+}
+
+.rcs-document-size {
+    display: block;
+    font-size: var(--rcs-font-size-small);
+    color: var(--rcs-text-secondary);
+    margin-top: 2px;
+}
+
+.rcs-message--outgoing .rcs-document-size {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* ==========================================================================
+   Rich Cards
+   ========================================================================== */
+
+.rcs-rich-card {
+    background: var(--rcs-surface);
+    border-radius: var(--rcs-card-radius);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.06);
+    max-width: 280px;
+}
+
+.rcs-card-media {
+    width: 100%;
+    overflow: hidden;
+    background: var(--rcs-border-light);
+}
+
+.rcs-card--short .rcs-card-media {
+    height: 112px;
+}
+
+.rcs-card--medium .rcs-card-media {
+    height: 168px;
+}
+
+.rcs-card--tall .rcs-card-media {
+    height: 264px;
+}
+
+.rcs-card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.rcs-card-content {
+    padding: 12px 16px;
+}
+
+.rcs-card-title {
+    font-family: var(--rcs-font);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--rcs-text);
+    margin: 0 0 4px;
+    line-height: 1.3;
+}
+
+.rcs-card-description {
+    font-family: var(--rcs-font);
+    font-size: 14px;
+    color: var(--rcs-text-secondary);
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.rcs-card-actions {
+    border-top: 1px solid var(--rcs-border-light);
+}
+
+.rcs-card-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px 16px;
+    background: transparent;
+    border: none;
+    border-top: 1px solid var(--rcs-border-light);
+    font-family: var(--rcs-font);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--rcs-primary);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.rcs-card-action-btn:first-child {
+    border-top: none;
+}
+
+.rcs-card-action-btn:hover {
+    background: var(--rcs-primary-light);
+}
+
+.rcs-card-action-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--rcs-primary);
+}
+
+/* ==========================================================================
+   Carousel
+   ========================================================================== */
+
+.rcs-carousel {
+    max-width: 100%;
+    overflow: hidden;
+    margin: 4px 0;
+}
+
+.rcs-carousel-track {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 4px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.rcs-carousel-track::-webkit-scrollbar {
+    display: none;
+}
+
+.rcs-carousel-card {
+    flex-shrink: 0;
+    background: var(--rcs-surface);
+    border-radius: var(--rcs-card-radius);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.06);
+    scroll-snap-align: start;
+}
+
+.rcs-carousel--small .rcs-carousel-card {
+    width: 136px;
+}
+
+.rcs-carousel--medium .rcs-carousel-card {
+    width: 232px;
+}
+
+.rcs-carousel-card .rcs-card-media {
+    height: 120px;
+}
+
+.rcs-carousel-card .rcs-card-content {
+    padding: 10px 12px;
+}
+
+.rcs-carousel-card .rcs-card-title {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rcs-carousel-card .rcs-card-description {
+    font-size: 13px;
+    -webkit-line-clamp: 2;
+}
+
+/* ==========================================================================
+   Action Buttons
+   ========================================================================== */
+
+.rcs-action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.rcs-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--rcs-surface);
+    border: 1px solid var(--rcs-border);
+    border-radius: 20px;
+    font-family: var(--rcs-font);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--rcs-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.rcs-action-btn:hover {
+    background: var(--rcs-primary-light);
+    border-color: var(--rcs-primary);
+}
+
+.rcs-action-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--rcs-primary);
+}
+
+/* ==========================================================================
+   Location Messages
+   ========================================================================== */
+
+.rcs-bubble--location {
+    padding: 0;
+    overflow: hidden;
+}
+
+.rcs-location-map {
+    height: 140px;
+    background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.rcs-location-pin {
+    animation: locationPinBounce 1s ease-out;
+}
+
+@keyframes locationPinBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.rcs-location-pin svg {
+    width: 40px;
+    height: 40px;
+    fill: var(--rcs-error);
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2));
+}
+
+.rcs-location-label {
+    padding: 12px 14px;
+    font-weight: 500;
+    color: var(--rcs-text);
+}
+
+/* ==========================================================================
+   Event Preview
+   ========================================================================== */
+
+.rcs-event-preview {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 13px;
+}
+
+.rcs-message--incoming .rcs-event-preview {
+    border-top-color: var(--rcs-border-light);
+}
+
+.rcs-event-preview svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Suggestion Chips
+   ========================================================================== */
+
+.rcs-suggestions {
+    padding: 12px 16px;
+    background: var(--rcs-surface);
+    border-top: 1px solid var(--rcs-border-light);
+}
+
+.rcs-suggestions-track {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.rcs-suggestions-track::-webkit-scrollbar {
+    display: none;
+}
+
+.rcs-suggestion-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    background: var(--rcs-surface);
+    border: 1px solid var(--rcs-border);
+    border-radius: 20px;
+    font-family: var(--rcs-font);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--rcs-primary);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.rcs-suggestion-chip:hover {
+    background: var(--rcs-primary-light);
+    border-color: var(--rcs-primary);
+}
+
+.rcs-suggestion-chip svg {
+    width: 16px;
+    height: 16px;
+    fill: var(--rcs-primary);
+}
+
+/* ==========================================================================
+   Input Bar
+   ========================================================================== */
+
+.rcs-input-bar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 8px 8px 4px;
+    background: var(--rcs-surface);
+    border-top: 1px solid var(--rcs-border-light);
+}
+
+.rcs-input-add,
+.rcs-input-emoji {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.rcs-input-add:hover,
+.rcs-input-emoji:hover {
+    background: var(--rcs-border-light);
+}
+
+.rcs-input-add svg,
+.rcs-input-emoji svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--rcs-text-secondary);
+}
+
+.rcs-input-field {
+    flex: 1;
+    padding: 12px 18px;
+    background: #F1F3F4;
+    border-radius: 24px;
+    font-family: var(--rcs-font);
+    font-size: var(--rcs-font-size);
+    color: var(--rcs-text-secondary);
+}
+
+.rcs-input-send {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--rcs-primary);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.rcs-input-send:hover {
+    transform: scale(1.05);
+}
+
+.rcs-input-send svg {
+    width: 22px;
+    height: 22px;
+    fill: white;
+    margin-left: 2px;
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+
+.rcs-empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.rcs-empty-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--rcs-border-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.rcs-empty-icon svg {
+    width: 40px;
+    height: 40px;
+    stroke: var(--rcs-text-secondary);
+}
+
+.rcs-empty-title {
+    font-family: var(--rcs-font);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--rcs-text);
+    margin: 0 0 8px;
+}
+
+.rcs-empty-text {
+    font-family: var(--rcs-font);
+    font-size: 14px;
+    color: var(--rcs-text-secondary);
+    max-width: 240px;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* ==========================================================================
+   Suggestion Reply (User tapped a chip)
+   ========================================================================== */
+
+.rcs-bubble--suggestion-reply {
+    background: var(--rcs-surface);
+    border: 2px solid var(--rcs-primary);
+    color: var(--rcs-primary);
+}
+
+/* ==========================================================================
+   Constructor Form - RCS Specific
+   ========================================================================== */
+
+.rcs-suggestions-builder {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rcs-suggestion-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+}
+
+.rcs-suggestion-item .suggestion-type-select {
+    flex: 0 0 140px;
+}
+
+.rcs-suggestion-item .suggestion-text-input {
+    flex: 1;
+    min-width: 120px;
+}
+
+.rcs-suggestion-item .suggestion-url-input,
+.rcs-suggestion-item .suggestion-phone-input {
+    flex: 1 1 100%;
+}
+
+.rcs-carousel-builder {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.rcs-card-item {
+    padding: 12px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+}
+
+.rcs-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.rcs-card-number {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.rcs-card-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rcs-card-fields input,
+.rcs-card-fields textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text-primary);
+    transition: border-color 0.2s ease;
+}
+
+.rcs-card-fields input:focus,
+.rcs-card-fields textarea:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+.rcs-card-fields textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 480px) {
+    .rcs-phone {
+        width: 100%;
+        height: auto;
+        min-height: 500px;
+        border-radius: 0;
+    }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "mocamaker",
+  "version": "1.0.0",
+  "description": "Generador de mockups conversacionales para WhatsApp y RCS",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "mockup",
+    "whatsapp",
+    "rcs",
+    "conversational",
+    "ai"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}
