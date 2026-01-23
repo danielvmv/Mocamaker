@@ -51,10 +51,12 @@ const AIGenerator = (function() {
             const response = await fetch(PROXY_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'x-api-key': API_KEY
                 },
                 body: JSON.stringify({
-                    apiKey: API_KEY,
+                    model: 'claude-3-haiku-20240307',
+                    max_tokens: 4096,
                     system: systemPrompt,
                     messages: [
                         { role: 'user', content: userPrompt }
