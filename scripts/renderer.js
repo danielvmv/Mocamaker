@@ -1,39 +1,59 @@
 /**
- * Mocamaker v2.0 - Renderer
+ * Mocamaker v2.1 - Renderer
  * Renders messages into visual mockups for WhatsApp and RCS
  */
 
 const Renderer = (function() {
     'use strict';
 
+    // Current render options
+    let currentOptions = {
+        brandName: 'Mi Empresa',
+        brandAvatar: null,
+        os: 'ios'
+    };
+
     /**
      * Render empty state (no messages)
      */
-    function renderEmpty(platform, brandName) {
+    function renderEmpty(platform, options) {
+        currentOptions = { ...currentOptions, ...normalizeOptions(options) };
         if (platform === 'whatsapp') {
-            return renderWhatsAppEmpty(brandName);
+            return renderWhatsAppEmpty(currentOptions);
         }
-        return renderRCSEmpty(brandName);
+        return renderRCSEmpty(currentOptions);
     }
 
     /**
      * Render full conversation
      */
-    function renderFull(messages, platform, brandName) {
+    function renderFull(messages, platform, options) {
+        currentOptions = { ...currentOptions, ...normalizeOptions(options) };
         if (platform === 'whatsapp') {
-            return renderWhatsAppFull(messages, brandName);
+            return renderWhatsAppFull(messages, currentOptions);
         }
-        return renderRCSFull(messages, brandName);
+        return renderRCSFull(messages, currentOptions);
+    }
+
+    /**
+     * Normalize options (support both old string format and new object format)
+     */
+    function normalizeOptions(options) {
+        if (typeof options === 'string') {
+            return { brandName: options };
+        }
+        return options || {};
     }
 
     /**
      * Render WhatsApp empty state
      */
-    function renderWhatsAppEmpty(brandName) {
+    function renderWhatsAppEmpty(options) {
+        const osClass = options.os === 'android' ? 'whatsapp-phone--android' : 'whatsapp-phone--ios';
         return `
-            <div class="whatsapp-phone">
-                ${renderWhatsAppStatusBar()}
-                ${renderWhatsAppHeader(brandName)}
+            <div class="whatsapp-phone ${osClass}">
+                ${renderWhatsAppStatusBar(options.os)}
+                ${renderWhatsAppHeader(options)}
                 <div class="wa-chat">
                     <div class="wa-empty-chat">
                         <div class="wa-empty-icon">💬</div>
@@ -48,11 +68,12 @@ const Renderer = (function() {
     /**
      * Render WhatsApp full conversation
      */
-    function renderWhatsAppFull(messages, brandName) {
+    function renderWhatsAppFull(messages, options) {
+        const osClass = options.os === 'android' ? 'whatsapp-phone--android' : 'whatsapp-phone--ios';
         return `
-            <div class="whatsapp-phone">
-                ${renderWhatsAppStatusBar()}
-                ${renderWhatsAppHeader(brandName)}
+            <div class="whatsapp-phone ${osClass}">
+                ${renderWhatsAppStatusBar(options.os)}
+                ${renderWhatsAppHeader(options)}
                 <div class="wa-chat">
                     ${messages.map((msg, index) => renderWhatsAppMessage(msg, index)).join('')}
                 </div>
@@ -64,10 +85,11 @@ const Renderer = (function() {
     /**
      * Render WhatsApp status bar
      */
-    function renderWhatsAppStatusBar() {
+    function renderWhatsAppStatusBar(os) {
+        const time = os === 'android' ? '9:41' : '9:41';
         return `
             <div class="wa-status-bar">
-                <span class="wa-status-time">9:41</span>
+                <span class="wa-status-time">${time}</span>
                 <div class="wa-status-icons">
                     <svg viewBox="0 0 24 24"><path d="M12 21.5c5.523 0 10-1.12 10-2.5V5c0-1.38-4.477-2.5-10-2.5S2 3.62 2 5v14c0 1.38 4.477 2.5 10 2.5z"/></svg>
                     <svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
@@ -80,8 +102,13 @@ const Renderer = (function() {
     /**
      * Render WhatsApp header
      */
-    function renderWhatsAppHeader(brandName) {
-        const initial = brandName ? brandName.charAt(0).toUpperCase() : 'M';
+    function renderWhatsAppHeader(options) {
+        const brandName = options.brandName || 'Mi Empresa';
+        const initial = brandName.charAt(0).toUpperCase();
+        const avatarContent = options.brandAvatar
+            ? `<img src="${options.brandAvatar}" alt="${escapeHtml(brandName)}">`
+            : initial;
+
         return `
             <div class="wa-header">
                 <div class="wa-header-back">
@@ -89,9 +116,9 @@ const Renderer = (function() {
                         <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
                     </svg>
                 </div>
-                <div class="wa-header-avatar">${initial}</div>
+                <div class="wa-header-avatar ${options.brandAvatar ? 'wa-header-avatar--image' : ''}">${avatarContent}</div>
                 <div class="wa-header-info">
-                    <div class="wa-header-name">${escapeHtml(brandName || 'Mi Empresa')}</div>
+                    <div class="wa-header-name">${escapeHtml(brandName)}</div>
                     <div class="wa-header-status">en línea</div>
                 </div>
                 <div class="wa-header-actions">
@@ -555,11 +582,12 @@ const Renderer = (function() {
     /**
      * Render RCS empty state
      */
-    function renderRCSEmpty(brandName) {
+    function renderRCSEmpty(options) {
+        const osClass = options.os === 'android' ? 'rcs-phone--android' : 'rcs-phone--ios';
         return `
-            <div class="rcs-phone">
-                ${renderRCSStatusBar()}
-                ${renderRCSHeader(brandName)}
+            <div class="rcs-phone ${osClass}">
+                ${renderRCSStatusBar(options.os)}
+                ${renderRCSHeader(options)}
                 <div class="rcs-chat">
                     <div class="rcs-empty-state">
                         <div class="rcs-empty-icon">
@@ -571,7 +599,7 @@ const Renderer = (function() {
                         <p class="rcs-empty-text">Agrega mensajes para construir tu mockup RCS</p>
                     </div>
                 </div>
-                ${renderRCSInputBar()}
+                ${renderRCSInputBar(options.os)}
             </div>
         `;
     }
@@ -579,7 +607,9 @@ const Renderer = (function() {
     /**
      * Render RCS full conversation
      */
-    function renderRCSFull(messages, brandName) {
+    function renderRCSFull(messages, options) {
+        const osClass = options.os === 'android' ? 'rcs-phone--android' : 'rcs-phone--ios';
+
         // Collect suggestions from the last brand message
         let suggestionsHtml = '';
         for (let i = messages.length - 1; i >= 0; i--) {
@@ -590,14 +620,14 @@ const Renderer = (function() {
         }
 
         return `
-            <div class="rcs-phone">
-                ${renderRCSStatusBar()}
-                ${renderRCSHeader(brandName)}
+            <div class="rcs-phone ${osClass}">
+                ${renderRCSStatusBar(options.os)}
+                ${renderRCSHeader(options)}
                 <div class="rcs-chat">
                     ${messages.map((msg, index) => renderRCSMessage(msg, index)).join('')}
                 </div>
                 ${suggestionsHtml}
-                ${renderRCSInputBar()}
+                ${renderRCSInputBar(options.os)}
             </div>
         `;
     }
@@ -605,10 +635,11 @@ const Renderer = (function() {
     /**
      * Render RCS status bar
      */
-    function renderRCSStatusBar() {
+    function renderRCSStatusBar(os) {
+        const time = '9:41';
         return `
             <div class="rcs-status-bar">
-                <span class="rcs-status-time">9:41</span>
+                <span class="rcs-status-time">${time}</span>
                 <div class="rcs-status-icons">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
@@ -620,8 +651,13 @@ const Renderer = (function() {
     /**
      * Render RCS header
      */
-    function renderRCSHeader(brandName) {
-        const initial = brandName ? brandName.charAt(0).toUpperCase() : 'M';
+    function renderRCSHeader(options) {
+        const brandName = options.brandName || 'Mi Empresa';
+        const initial = brandName.charAt(0).toUpperCase();
+        const avatarContent = options.brandAvatar
+            ? `<img src="${options.brandAvatar}" alt="${escapeHtml(brandName)}">`
+            : initial;
+
         return `
             <div class="rcs-header">
                 <button class="rcs-header-back">
@@ -629,9 +665,9 @@ const Renderer = (function() {
                         <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
                     </svg>
                 </button>
-                <div class="rcs-header-avatar">${initial}</div>
+                <div class="rcs-header-avatar ${options.brandAvatar ? 'rcs-header-avatar--image' : ''}">${avatarContent}</div>
                 <div class="rcs-header-info">
-                    <div class="rcs-header-name">${escapeHtml(brandName || 'Mi Empresa')}</div>
+                    <div class="rcs-header-name">${escapeHtml(brandName)}</div>
                     <div class="rcs-header-verified">
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
                         Verificado por Google
@@ -1059,7 +1095,7 @@ const Renderer = (function() {
     /**
      * Render RCS input bar
      */
-    function renderRCSInputBar() {
+    function renderRCSInputBar(os) {
         return `
             <div class="rcs-input-bar">
                 <button class="rcs-input-add">
@@ -1081,15 +1117,16 @@ const Renderer = (function() {
     /**
      * Generate standalone HTML for download
      */
-    function generateStandaloneHTML(mockupHtml, platform) {
+    function generateStandaloneHTML(mockupHtml, platform, os) {
         const styles = platform === 'whatsapp' ? getWhatsAppStyles() : getRCSStyles();
+        const osLabel = os === 'android' ? 'Android' : 'iOS';
 
         return `<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mockup ${platform === 'whatsapp' ? 'WhatsApp' : 'RCS'} - Mocamaker</title>
+    <title>Mockup ${platform === 'whatsapp' ? 'WhatsApp' : 'RCS'} (${osLabel}) - Mocamaker</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -1102,6 +1139,9 @@ const Renderer = (function() {
             padding: 20px;
         }
         .message-delete-btn, .wa-message-wrapper:hover .message-actions { display: none !important; }
+        .wa-header-avatar--image img, .rcs-header-avatar--image img {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+        }
         ${styles}
     </style>
 </head>

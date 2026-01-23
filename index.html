@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mocamaker v2.0 - Mockups conversacionales</title>
+    <title>Mocamaker v2.1 - Mockups conversacionales</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,6 +13,28 @@
     <link rel="stylesheet" href="styles/rcs.css">
 </head>
 <body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <button id="theme-toggle-btn" class="theme-toggle-btn" title="Cambiar tema">
+            <!-- Sun icon (shown in light mode) -->
+            <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            <!-- Moon icon (shown in dark mode) -->
+            <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+        </button>
+    </div>
+
     <div class="app-container">
         <!-- Header -->
         <header class="header">
@@ -20,7 +42,7 @@
                 <div class="header-left">
                     <div class="logo">
                         <h1 class="logo-text"><span class="logo-highlight">M</span>ocamaker</h1>
-                        <span class="version-badge">v2.0</span>
+                        <span class="version-badge">v2.1</span>
                     </div>
                 </div>
                 <div class="header-center">
@@ -38,6 +60,28 @@
                             </svg>
                             RCS
                         </button>
+                    </div>
+
+                    <!-- OS Selector -->
+                    <div class="os-selector">
+                        <label class="os-option">
+                            <input type="radio" name="os" value="ios" checked>
+                            <span class="os-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                                </svg>
+                                iOS
+                            </span>
+                        </label>
+                        <label class="os-option">
+                            <input type="radio" name="os" value="android">
+                            <span class="os-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24a11.463 11.463 0 00-8.94 0L5.65 5.67c-.19-.29-.58-.38-.87-.2-.28.18-.37.54-.22.83L6.4 9.48A10.78 10.78 0 003 18h18a10.78 10.78 0 00-3.4-8.52zM7 15.25a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5zm10 0a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z"/>
+                                </svg>
+                                Android
+                            </span>
+                        </label>
                     </div>
                 </div>
                 <div class="header-right">
@@ -196,10 +240,22 @@
                     </div>
                 </div>
 
-                <!-- Brand Name Editor -->
+                <!-- Brand Editor -->
                 <div class="brand-editor">
-                    <label class="brand-label">Nombre del negocio:</label>
-                    <input type="text" id="brand-name" class="brand-input" value="Mi Empresa" placeholder="Nombre del negocio">
+                    <div class="avatar-upload" title="Subir imagen de perfil">
+                        <input type="file" id="avatar-upload" class="avatar-upload-input" accept="image/jpeg,image/png,image/webp">
+                        <div id="avatar-preview" class="avatar-upload-preview">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <polyline points="21 15 16 10 5 21"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="brand-name-wrapper">
+                        <label class="brand-label">Nombre del negocio:</label>
+                        <input type="text" id="brand-name" class="brand-input" value="Mi Empresa" placeholder="Nombre del negocio">
+                    </div>
                 </div>
 
                 <!-- Mockup Preview -->

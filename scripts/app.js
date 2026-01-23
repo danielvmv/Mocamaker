@@ -1,5 +1,5 @@
 /**
- * Mocamaker v2.0 - Main Application
+ * Mocamaker v2.1 - Main Application
  * Orchestrates manual and AI modes, manages conversation state
  */
 
@@ -9,9 +9,12 @@
     // Application State
     const state = {
         platform: 'whatsapp',
+        os: 'ios', // 'ios' or 'android'
+        theme: 'light', // 'light' or 'dark'
         mode: 'manual', // 'manual' or 'ai'
         messages: [],
         brandName: 'Mi Empresa',
+        brandAvatar: null, // Base64 image or null
         isGenerating: false
     };
 
@@ -21,7 +24,10 @@
     // LocalStorage keys
     const STORAGE_KEYS = {
         API_KEY: 'mocamaker_api_key',
-        BRAND_NAME: 'mocamaker_brand_name'
+        BRAND_NAME: 'mocamaker_brand_name',
+        THEME: 'mocamaker_theme',
+        OS: 'mocamaker_os',
+        AVATAR: 'mocamaker_avatar'
     };
 
     /**
@@ -34,7 +40,7 @@
         Constructor.init(state.platform);
         renderPreview();
         updateApiStatus();
-        console.log('Mocamaker v2.0 initialized');
+        console.log('Mocamaker v2.1 initialized');
     }
 
     /**
@@ -42,6 +48,12 @@
      */
     function cacheElements() {
         elements = {
+            // Theme toggle
+            themeToggleBtn: document.getElementById('theme-toggle-btn'),
+
+            // OS selector
+            osInputs: document.querySelectorAll('input[name="os"]'),
+
             // Platform tabs
             platformTabs: document.querySelectorAll('.platform-tab'),
 
@@ -58,6 +70,10 @@
             mockupPreview: document.getElementById('mockup-preview'),
             messageCount: document.getElementById('message-count'),
             brandNameInput: document.getElementById('brand-name'),
+
+            // Avatar
+            avatarUpload: document.getElementById('avatar-upload'),
+            avatarPreview: document.getElementById('avatar-preview'),
 
             // Actions
             clearBtn: document.getElementById('clear-btn'),
@@ -77,6 +93,21 @@
      * Load saved data from localStorage
      */
     function loadSavedData() {
+        // Load theme
+        const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME);
+        if (savedTheme) {
+            state.theme = savedTheme;
+            applyTheme(savedTheme);
+        }
+
+        // Load OS
+        const savedOS = localStorage.getItem(STORAGE_KEYS.OS);
+        if (savedOS) {
+            state.os = savedOS;
+            const osInput = document.querySelector(`input[name="os"][value="${savedOS}"]`);
+            if (osInput) osInput.checked = true;
+        }
+
         // Load API key
         const savedKey = localStorage.getItem(STORAGE_KEYS.API_KEY);
         if (savedKey) {
@@ -90,12 +121,27 @@
             state.brandName = savedBrandName;
             elements.brandNameInput.value = savedBrandName;
         }
+
+        // Load avatar
+        const savedAvatar = localStorage.getItem(STORAGE_KEYS.AVATAR);
+        if (savedAvatar) {
+            state.brandAvatar = savedAvatar;
+            updateAvatarPreview(savedAvatar);
+        }
     }
 
     /**
      * Setup event listeners
      */
     function setupEventListeners() {
+        // Theme toggle
+        elements.themeToggleBtn.addEventListener('click', handleThemeToggle);
+
+        // OS selector
+        elements.osInputs.forEach(input => {
+            input.addEventListener('change', () => handleOSChange(input.value));
+        });
+
         // Platform tabs
         elements.platformTabs.forEach(tab => {
             tab.addEventListener('click', () => handlePlatformChange(tab.dataset.platform));
@@ -122,6 +168,9 @@
             renderPreview();
         });
 
+        // Avatar upload
+        elements.avatarUpload.addEventListener('change', handleAvatarUpload);
+
         // Actions
         elements.clearBtn.addEventListener('click', handleClear);
         elements.downloadBtn.addEventListener('click', handleDownload);
@@ -144,6 +193,82 @@
 
         // Listen for messages from Constructor
         window.addEventListener('message:add', handleMessageAdd);
+    }
+
+    /**
+     * Handle theme toggle
+     */
+    function handleThemeToggle() {
+        const newTheme = state.theme === 'light' ? 'dark' : 'light';
+        state.theme = newTheme;
+        applyTheme(newTheme);
+        localStorage.setItem(STORAGE_KEYS.THEME, newTheme);
+    }
+
+    /**
+     * Apply theme to document
+     */
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+    }
+
+    /**
+     * Handle OS change
+     */
+    function handleOSChange(os) {
+        state.os = os;
+        localStorage.setItem(STORAGE_KEYS.OS, os);
+        renderPreview();
+    }
+
+    /**
+     * Handle avatar upload
+     */
+    function handleAvatarUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            alert('Formato no soportado. Usa JPG, PNG o WebP.');
+            return;
+        }
+
+        // Validate file size (max 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            alert('La imagen es muy grande. Máximo 2MB.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const base64 = event.target.result;
+            state.brandAvatar = base64;
+            localStorage.setItem(STORAGE_KEYS.AVATAR, base64);
+            updateAvatarPreview(base64);
+            renderPreview();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    /**
+     * Update avatar preview
+     */
+    function updateAvatarPreview(base64) {
+        if (base64) {
+            elements.avatarPreview.innerHTML = `<img src="${base64}" alt="Avatar">`;
+            elements.avatarPreview.classList.add('avatar-upload-preview--has-image');
+        } else {
+            elements.avatarPreview.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                </svg>
+            `;
+            elements.avatarPreview.classList.remove('avatar-upload-preview--has-image');
+        }
     }
 
     /**
@@ -270,14 +395,20 @@
     function handleDownload() {
         if (state.messages.length === 0) return;
 
-        const mockupHtml = Renderer.renderFull(state.messages, state.platform, state.brandName);
-        const standaloneHtml = Renderer.generateStandaloneHTML(mockupHtml, state.platform);
+        const renderOptions = {
+            brandName: state.brandName,
+            brandAvatar: state.brandAvatar,
+            os: state.os
+        };
+
+        const mockupHtml = Renderer.renderFull(state.messages, state.platform, renderOptions);
+        const standaloneHtml = Renderer.generateStandaloneHTML(mockupHtml, state.platform, state.os);
 
         const blob = new Blob([standaloneHtml], { type: 'text/html' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `mocamaker-${state.platform}-${Date.now()}.html`;
+        a.download = `mocamaker-${state.platform}-${state.os}-${Date.now()}.html`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -300,10 +431,16 @@
      * Render preview
      */
     function renderPreview() {
+        const renderOptions = {
+            brandName: state.brandName,
+            brandAvatar: state.brandAvatar,
+            os: state.os
+        };
+
         if (state.messages.length === 0) {
-            elements.mockupPreview.innerHTML = Renderer.renderEmpty(state.platform, state.brandName);
+            elements.mockupPreview.innerHTML = Renderer.renderEmpty(state.platform, renderOptions);
         } else {
-            elements.mockupPreview.innerHTML = Renderer.renderFull(state.messages, state.platform, state.brandName);
+            elements.mockupPreview.innerHTML = Renderer.renderFull(state.messages, state.platform, renderOptions);
 
             // Add delete button listeners
             elements.mockupPreview.querySelectorAll('.message-delete-btn').forEach(btn => {

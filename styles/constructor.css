@@ -27,8 +27,9 @@
 
 .header {
     padding: var(--spacing-3) var(--spacing-4);
-    background: var(--color-white);
-    border-bottom: 1px solid var(--color-gray-200);
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-primary);
+    transition: background var(--transition-base), border-color var(--transition-base);
 }
 
 .header-content {
@@ -49,6 +50,9 @@
 
 .header-center {
     flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
 }
 
 .logo {
@@ -62,9 +66,10 @@
 /* Platform Tabs */
 .platform-tabs {
     display: flex;
-    background: var(--color-gray-100);
+    background: var(--bg-tertiary);
     border-radius: var(--radius-lg);
     padding: 4px;
+    transition: background var(--transition-base);
 }
 
 .platform-tab {
@@ -78,18 +83,18 @@
     font-family: var(--font-family);
     font-size: var(--font-size-sm);
     font-weight: 500;
-    color: var(--color-gray-600);
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all var(--transition-base);
 }
 
 .platform-tab:hover {
-    color: var(--color-gray-800);
+    color: var(--text-primary);
 }
 
 .platform-tab.active {
-    background: var(--color-white);
-    color: var(--color-gray-900);
+    background: var(--bg-primary);
+    color: var(--text-primary);
     box-shadow: var(--shadow-sm);
 }
 
@@ -857,31 +862,56 @@
     align-items: center;
     gap: var(--spacing-3);
     padding: var(--spacing-3) var(--spacing-4);
-    background: var(--color-white);
-    border-bottom: 1px solid var(--color-gray-200);
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-primary);
+    transition: background var(--transition-base), border-color var(--transition-base);
+}
+
+.brand-name-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    flex: 1;
 }
 
 .brand-label {
     font-size: var(--font-size-sm);
-    color: var(--color-gray-600);
+    color: var(--text-secondary);
     white-space: nowrap;
 }
 
 .brand-input {
     flex: 1;
     padding: var(--spacing-2) var(--spacing-3);
-    border: 1px solid var(--color-gray-200);
+    border: 1px solid var(--border-primary);
     border-radius: var(--radius-md);
     font-family: var(--font-family);
     font-size: var(--font-size-sm);
     font-weight: 500;
-    color: var(--color-gray-800);
-    transition: border-color var(--transition-base);
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    transition: border-color var(--transition-base), background var(--transition-base);
 }
 
 .brand-input:focus {
     outline: none;
     border-color: var(--color-primary);
+}
+
+/* Avatar Upload in Brand Editor */
+.brand-editor .avatar-upload {
+    flex-shrink: 0;
+}
+
+.brand-editor .avatar-upload-preview {
+    width: 40px;
+    height: 40px;
+    border-width: 1px;
+}
+
+.brand-editor .avatar-upload-preview svg {
+    width: 16px;
+    height: 16px;
 }
 
 /* Preview Container */

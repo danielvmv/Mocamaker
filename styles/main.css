@@ -1,8 +1,8 @@
 /* ==========================================================================
-   Mocamaker v1.0 - Main Styles
+   Mocamaker v2.1 - Main Styles
    ========================================================================== */
 
-/* CSS Variables */
+/* CSS Variables - Light Mode (Default) */
 :root {
     /* Brand Colors */
     --color-primary: #6B46C1;
@@ -11,7 +11,7 @@
     --color-secondary: #25D366;
     --color-secondary-dark: #128C7E;
 
-    /* Neutrals */
+    /* Neutrals - Light Mode */
     --color-white: #FFFFFF;
     --color-gray-50: #F9FAFB;
     --color-gray-100: #F3F4F6;
@@ -23,6 +23,43 @@
     --color-gray-700: #374151;
     --color-gray-800: #1F2937;
     --color-gray-900: #111827;
+
+    /* Semantic Colors - Light Mode */
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F9FAFB;
+    --bg-tertiary: #F3F4F6;
+    --bg-app: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 50%, #F3E8FF 100%);
+    --text-primary: #1F2937;
+    --text-secondary: #6B7280;
+    --text-tertiary: #9CA3AF;
+    --border-primary: #E5E7EB;
+    --border-secondary: #D1D5DB;
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+    --color-gray-50: #18181B;
+    --color-gray-100: #27272A;
+    --color-gray-200: #3F3F46;
+    --color-gray-300: #52525B;
+    --color-gray-400: #71717A;
+    --color-gray-500: #A1A1AA;
+    --color-gray-600: #D4D4D8;
+    --color-gray-700: #E4E4E7;
+    --color-gray-800: #F4F4F5;
+    --color-gray-900: #FAFAFA;
+
+    /* Semantic Colors - Dark Mode */
+    --bg-primary: #18181B;
+    --bg-secondary: #27272A;
+    --bg-tertiary: #3F3F46;
+    --bg-app: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #3b0764 100%);
+    --text-primary: #FAFAFA;
+    --text-secondary: #A1A1AA;
+    --text-tertiary: #71717A;
+    --border-primary: #3F3F46;
+    --border-secondary: #52525B;
+}
 
     /* Typography */
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
@@ -84,9 +121,10 @@ body {
     font-family: var(--font-family);
     font-size: var(--font-size-base);
     line-height: 1.6;
-    color: var(--color-gray-800);
-    background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 50%, #F3E8FF 100%);
+    color: var(--text-primary);
+    background: var(--bg-app);
     min-height: 100vh;
+    transition: background var(--transition-slow), color var(--transition-base);
 }
 
 /* ==========================================================================
@@ -176,13 +214,15 @@ body {
    ========================================================================== */
 
 .generator-panel {
-    background: var(--color-white);
+    background: var(--bg-primary);
     border-radius: var(--radius-xl);
     padding: var(--spacing-6);
     box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
     gap: var(--spacing-5);
+    border: 1px solid var(--border-primary);
+    transition: background var(--transition-base), border-color var(--transition-base);
 }
 
 .panel-header {
@@ -192,21 +232,22 @@ body {
 .panel-title {
     font-size: var(--font-size-xl);
     font-weight: 600;
-    color: var(--color-gray-900);
+    color: var(--text-primary);
     margin-bottom: var(--spacing-1);
 }
 
 .panel-subtitle {
     font-size: var(--font-size-sm);
-    color: var(--color-gray-500);
+    color: var(--text-secondary);
 }
 
 /* API Key Section */
 .api-key-section {
-    background: var(--color-gray-50);
-    border: 1px solid var(--color-gray-200);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
     border-radius: var(--radius-lg);
     padding: var(--spacing-4);
+    transition: background var(--transition-base), border-color var(--transition-base);
 }
 
 .api-key-header {
@@ -222,7 +263,7 @@ body {
     gap: var(--spacing-2);
     font-size: var(--font-size-sm);
     font-weight: 500;
-    color: var(--color-gray-700);
+    color: var(--text-primary);
 }
 
 .key-icon {
@@ -269,13 +310,13 @@ body {
 .api-key-input {
     flex: 1;
     padding: var(--spacing-3);
-    border: 1px solid var(--color-gray-200);
+    border: 1px solid var(--border-primary);
     border-radius: var(--radius-md);
     font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
     font-size: var(--font-size-sm);
-    color: var(--color-gray-800);
-    background: var(--color-white);
-    transition: border-color var(--transition-base), box-shadow var(--transition-base);
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    transition: border-color var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
 }
 
 .api-key-input::placeholder {
@@ -302,17 +343,17 @@ body {
     justify-content: center;
     width: 42px;
     height: 42px;
-    background: var(--color-white);
-    border: 1px solid var(--color-gray-200);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
     border-radius: var(--radius-md);
-    color: var(--color-gray-500);
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all var(--transition-base);
 }
 
 .toggle-visibility-btn:hover {
-    background: var(--color-gray-100);
-    color: var(--color-gray-700);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
 }
 
 .eye-icon {
@@ -366,20 +407,25 @@ body {
     align-items: center;
     gap: var(--spacing-2);
     padding: var(--spacing-4);
-    background: var(--color-gray-50);
-    border: 2px solid var(--color-gray-200);
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-primary);
     border-radius: var(--radius-lg);
     transition: all var(--transition-base);
 }
 
 .platform-option:hover .platform-card {
-    border-color: var(--color-gray-300);
-    background: var(--color-gray-100);
+    border-color: var(--border-secondary);
+    background: var(--bg-tertiary);
 }
 
 .platform-option input:checked + .platform-card {
     border-color: var(--color-primary);
-    background: #F5F3FF;
+    background: var(--color-primary);
+    background: rgba(107, 70, 193, 0.15);
+}
+
+[data-theme="dark"] .platform-option input:checked + .platform-card {
+    background: rgba(107, 70, 193, 0.3);
 }
 
 .platform-icon {
@@ -420,7 +466,7 @@ body {
 .platform-name {
     font-size: var(--font-size-sm);
     font-weight: 500;
-    color: var(--color-gray-700);
+    color: var(--text-primary);
 }
 
 /* Input Container */
@@ -436,14 +482,15 @@ body {
     flex: 1;
     min-height: 250px;
     padding: var(--spacing-4);
-    border: 2px solid var(--color-gray-200);
+    border: 2px solid var(--border-primary);
     border-radius: var(--radius-lg);
     font-family: var(--font-family);
     font-size: var(--font-size-sm);
     line-height: 1.7;
-    color: var(--color-gray-800);
+    color: var(--text-primary);
+    background: var(--bg-primary);
     resize: none;
-    transition: border-color var(--transition-base), box-shadow var(--transition-base);
+    transition: border-color var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
 }
 
 .conversation-textarea::placeholder {
@@ -512,13 +559,15 @@ body {
    ========================================================================== */
 
 .preview-panel {
-    background: var(--color-white);
+    background: var(--bg-primary);
     border-radius: var(--radius-xl);
     padding: var(--spacing-6);
     box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
     gap: var(--spacing-4);
+    border: 1px solid var(--border-primary);
+    transition: background var(--transition-base), border-color var(--transition-base);
 }
 
 .preview-header {
@@ -530,7 +579,7 @@ body {
 .preview-title {
     font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--color-gray-900);
+    color: var(--text-primary);
 }
 
 .preview-actions {
@@ -545,11 +594,11 @@ body {
     gap: var(--spacing-2);
     padding: var(--spacing-2) var(--spacing-4);
     background: transparent;
-    color: var(--color-gray-500);
+    color: var(--text-secondary);
     font-family: var(--font-family);
     font-size: var(--font-size-sm);
     font-weight: 500;
-    border: 1px solid var(--color-gray-200);
+    border: 1px solid var(--border-primary);
     border-radius: var(--radius-md);
     cursor: pointer;
     transition: all var(--transition-base);
@@ -576,20 +625,20 @@ body {
     align-items: center;
     gap: var(--spacing-2);
     padding: var(--spacing-2) var(--spacing-4);
-    background: var(--color-gray-100);
-    color: var(--color-gray-700);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
     font-family: var(--font-family);
     font-size: var(--font-size-sm);
     font-weight: 500;
-    border: 1px solid var(--color-gray-200);
+    border: 1px solid var(--border-primary);
     border-radius: var(--radius-md);
     cursor: pointer;
     transition: all var(--transition-base);
 }
 
 .download-button:hover:not(:disabled) {
-    background: var(--color-gray-200);
-    color: var(--color-gray-800);
+    background: var(--border-primary);
+    color: var(--text-primary);
 }
 
 .download-button:disabled {
@@ -606,9 +655,10 @@ body {
 .preview-container {
     flex: 1;
     min-height: 400px;
-    background: var(--color-gray-100);
+    background: var(--bg-tertiary);
     border-radius: var(--radius-lg);
     overflow: hidden;
+    transition: background var(--transition-base);
 }
 
 .mockup-preview {
@@ -630,7 +680,7 @@ body {
     width: 80px;
     height: 80px;
     margin: 0 auto var(--spacing-4);
-    background: var(--color-gray-200);
+    background: var(--border-primary);
     border-radius: var(--radius-xl);
     display: flex;
     align-items: center;
@@ -640,19 +690,19 @@ body {
 .empty-icon svg {
     width: 40px;
     height: 40px;
-    color: var(--color-gray-400);
+    color: var(--text-tertiary);
 }
 
 .empty-text {
     font-size: var(--font-size-base);
     font-weight: 500;
-    color: var(--color-gray-600);
+    color: var(--text-secondary);
     margin-bottom: var(--spacing-1);
 }
 
 .empty-hint {
     font-size: var(--font-size-sm);
-    color: var(--color-gray-400);
+    color: var(--text-tertiary);
 }
 
 /* ==========================================================================
@@ -666,7 +716,7 @@ body {
 
 .footer-text {
     font-size: var(--font-size-sm);
-    color: var(--color-gray-600);
+    color: var(--text-secondary);
     margin-bottom: var(--spacing-1);
 }
 
@@ -677,7 +727,7 @@ body {
 
 .footer-credits {
     font-size: var(--font-size-xs);
-    color: var(--color-gray-400);
+    color: var(--text-tertiary);
 }
 
 /* ==========================================================================
@@ -723,4 +773,199 @@ body {
 
 .fade-in {
     animation: fadeIn var(--transition-slow) ease-out;
+}
+
+/* ==========================================================================
+   Theme Toggle
+   ========================================================================== */
+
+.theme-toggle {
+    position: fixed;
+    top: var(--spacing-4);
+    right: var(--spacing-4);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-md);
+}
+
+.theme-toggle-btn:hover {
+    background: var(--bg-secondary);
+    transform: scale(1.05);
+}
+
+.theme-toggle-btn svg {
+    width: 20px;
+    height: 20px;
+    color: var(--text-primary);
+    transition: transform var(--transition-base);
+}
+
+.theme-toggle-btn:hover svg {
+    transform: rotate(15deg);
+}
+
+.theme-icon-sun,
+.theme-icon-moon {
+    display: none;
+}
+
+[data-theme="light"] .theme-icon-sun,
+:root:not([data-theme]) .theme-icon-sun {
+    display: block;
+}
+
+[data-theme="dark"] .theme-icon-moon {
+    display: block;
+}
+
+/* ==========================================================================
+   OS Selector (iOS/Android)
+   ========================================================================== */
+
+.os-selector {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-1);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-full);
+}
+
+.os-option {
+    cursor: pointer;
+}
+
+.os-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.os-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-2) var(--spacing-4);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-full);
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.os-option:hover .os-btn {
+    color: var(--text-primary);
+}
+
+.os-option input:checked + .os-btn {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.os-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ==========================================================================
+   Controls Row (Platform + OS)
+   ========================================================================== */
+
+.controls-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+}
+
+.controls-row .platform-selector {
+    flex: 1;
+}
+
+/* ==========================================================================
+   Contextual Fade for RCS
+   ========================================================================== */
+
+.field-group--disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    transition: opacity var(--transition-slow);
+}
+
+.field-group--enabled {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity var(--transition-slow);
+}
+
+/* ==========================================================================
+   Avatar Upload
+   ========================================================================== */
+
+.avatar-upload {
+    position: relative;
+    cursor: pointer;
+}
+
+.avatar-upload-input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.avatar-upload-preview {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background: var(--bg-tertiary);
+    border: 2px dashed var(--border-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: all var(--transition-base);
+}
+
+.avatar-upload:hover .avatar-upload-preview {
+    border-color: var(--color-primary);
+    background: rgba(107, 70, 193, 0.1);
+}
+
+.avatar-upload-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-upload-preview svg {
+    width: 20px;
+    height: 20px;
+    color: var(--text-tertiary);
+}
+
+.avatar-upload-preview--has-image {
+    border-style: solid;
+    border-color: var(--color-primary);
 }
