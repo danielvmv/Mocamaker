@@ -82,7 +82,7 @@ const Constructor = (function() {
             if (types.length === 0) return;
 
             html += `
-                <div class="type-category">
+                <div class="type-category" data-category="${category.id}">
                     <div class="type-category-header">${category.icon} ${category.name}</div>
                     <div class="type-category-items">
                         ${types.map(type => `
@@ -124,6 +124,48 @@ const Constructor = (function() {
 
         renderDynamicForm(typeId, platform);
         elements.addMessageBtn.disabled = false;
+
+        // Apply contextual fade for RCS (text and multimedia are mutually exclusive)
+        applyContextualFade(typeId, platform);
+    }
+
+    /**
+     * Apply contextual fade to incompatible categories (RCS only)
+     * When "text" is selected, fade out multimedia and rich cards
+     * because text and media are mutually exclusive in RCS
+     */
+    function applyContextualFade(typeId, platform) {
+        // Only apply for RCS platform
+        if (platform !== 'rcs') {
+            // Remove any existing fades for non-RCS
+            elements.typeSelector.querySelectorAll('.type-category').forEach(cat => {
+                cat.classList.remove('type-category--faded');
+            });
+            return;
+        }
+
+        // Categories to fade when text is selected
+        const fadeOnText = ['media', 'cards'];
+        // Categories to fade when media/cards are selected
+        const fadeOnMedia = ['basic'];
+
+        const isTextSelected = typeId === 'text';
+        const isMediaOrCardSelected = ['image', 'video', 'audio', 'document', 'rich_card', 'carousel'].includes(typeId);
+
+        elements.typeSelector.querySelectorAll('.type-category').forEach(cat => {
+            const categoryId = cat.dataset.category;
+
+            if (isTextSelected && fadeOnText.includes(categoryId)) {
+                // Fade media and cards when text is selected
+                cat.classList.add('type-category--faded');
+            } else if (isMediaOrCardSelected && fadeOnMedia.includes(categoryId)) {
+                // Fade basic (text) when media/cards are selected
+                cat.classList.add('type-category--faded');
+            } else {
+                // Remove fade from all other categories
+                cat.classList.remove('type-category--faded');
+            }
+        });
     }
 
     /**

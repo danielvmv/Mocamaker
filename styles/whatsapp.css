@@ -1269,3 +1269,73 @@
         border-radius: 0;
     }
 }
+
+/* ==========================================================================
+   OS-Specific Typography (Native Fonts)
+   ========================================================================== */
+
+/* iOS - San Francisco Font */
+.whatsapp-phone--ios {
+    --wa-font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+}
+
+.whatsapp-phone--ios .wa-header-name,
+.whatsapp-phone--ios .wa-header-status,
+.whatsapp-phone--ios .wa-bubble-text,
+.whatsapp-phone--ios .wa-bubble-time,
+.whatsapp-phone--ios .wa-button,
+.whatsapp-phone--ios .wa-input-field {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* iOS Status Bar Style */
+.whatsapp-phone--ios .wa-status-bar {
+    padding-top: 4px;
+}
+
+.whatsapp-phone--ios .wa-status-time {
+    font-weight: 600;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+}
+
+/* Android - Roboto Font */
+.whatsapp-phone--android {
+    --wa-font: 'Roboto', 'Noto Sans', 'Arial', sans-serif;
+}
+
+.whatsapp-phone--android .wa-header-name,
+.whatsapp-phone--android .wa-header-status,
+.whatsapp-phone--android .wa-bubble-text,
+.whatsapp-phone--android .wa-bubble-time,
+.whatsapp-phone--android .wa-button,
+.whatsapp-phone--android .wa-input-field {
+    font-family: 'Roboto', 'Noto Sans', 'Arial', sans-serif;
+    -webkit-font-smoothing: auto;
+}
+
+/* Android Status Bar Style */
+.whatsapp-phone--android .wa-status-bar {
+    height: 28px;
+    padding: 0 12px;
+}
+
+.whatsapp-phone--android .wa-status-time {
+    font-weight: 500;
+    font-size: 12px;
+    font-family: 'Roboto', 'Noto Sans', sans-serif;
+}
+
+/* Android has slightly different bubble radius */
+.whatsapp-phone--android .wa-bubble {
+    border-radius: 8px;
+}
+
+.whatsapp-phone--android .wa-message--outgoing .wa-bubble {
+    border-top-right-radius: 2px;
+}
+
+.whatsapp-phone--android .wa-message--incoming .wa-bubble {
+    border-top-left-radius: 2px;
+}

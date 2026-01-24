@@ -3,45 +3,45 @@
 ## [v2.1.0] - En Desarrollo
 
 ### 🎨 Theming
-- **[FEATURE]** Implementación de Dark Mode/Light Mode
-  - Toggle de tema en la interfaz principal
-  - Modo claro/oscuro NO afecta los mockups de WhatsApp y RCS
-  - Los mockups mantienen su look & feel nativo independiente del tema de la app
-  - Persistencia de preferencia de tema en localStorage
+- **[FEATURE]** ✅ Implementación de Dark Mode/Light Mode
+  - ✅ Toggle de tema en la interfaz principal
+  - ✅ Modo claro/oscuro NO afecta los mockups de WhatsApp y RCS
+  - ✅ Los mockups mantienen su look & feel nativo independiente del tema de la app
+  - ✅ Persistencia de preferencia de tema en localStorage
 
 ### 📱 Plataformas & Fidelidad Visual
 
 #### [PRIORITY: TOP] Selector de Sistema Operativo
-- **[FEATURE]** Control iOS/Android en sección principal
-  - Posicionado a la misma altura que controles RCS/WhatsApp
-  - Diseño natural e integrado con controles existentes
-  - Switch sin pérdida de datos al cambiar entre plataformas
+- **[FEATURE]** ✅ Control iOS/Android en sección principal
+  - ✅ Posicionado a la misma altura que controles RCS/WhatsApp
+  - ✅ Diseño natural e integrado con controles existentes
+  - ✅ Switch sin pérdida de datos al cambiar entre plataformas
 
 #### [CRITICAL] Fidelidad de Diseño
-- **[ENHANCEMENT]** Mockups RCS 100% fieles a diseño original de cada plataforma
-  - iOS: Basado en última versión de iOS
-  - Android: Basado en última versión de Material Design
-  - Referencias visuales actualizadas a estándares 2025
-  - Respeto estricto a guidelines de cada OS
+- **[ENHANCEMENT]** ✅ Mockups RCS 100% fieles a diseño original de cada plataforma
+  - ✅ iOS: Basado en última versión de iOS (tipografía San Francisco)
+  - ✅ Android: Basado en última versión de Material Design (tipografía Roboto)
+  - ✅ Referencias visuales actualizadas a estándares 2025
+  - ✅ Respeto estricto a guidelines de cada OS (border-radius, spacing)
 
 ### 🖼️ Personalización de Marca
 
-- **[FEATURE]** Upload de imagen de perfil de empresa
-  - Soporte para formatos: JPG, PNG, WebP
-  - Preview en tiempo real en el mockup
-  - Compresión/optimización automática de imágenes
-  - Validación de dimensiones recomendadas
+- **[FEATURE]** ✅ Upload de imagen de perfil de empresa
+  - ✅ Soporte para formatos: JPG, PNG, WebP
+  - ✅ Preview en tiempo real en el mockup
+  - ⏳ Compresión/optimización automática de imágenes
+  - ✅ Validación de dimensiones recomendadas (max 2MB)
 
 ### 🔄 UX Improvements
 
 #### Switching Dinámico iOS/Android
-- **[FEATURE]** Cambio de plataforma sin pérdida de datos
-  - Preservación de todo el contenido al hacer switch
-  - Transición visual elegante entre diseños
-  - Estado del mockup persistente entre cambios
+- **[FEATURE]** ✅ Cambio de plataforma sin pérdida de datos
+  - ✅ Preservación de todo el contenido al hacer switch
+  - ✅ Transición visual elegante entre diseños
+  - ✅ Estado del mockup persistente entre cambios
 
 #### Controles Contextuales Inteligentes
-- **[FEATURE]** Desvanecimiento elegante de controles incompatibles (RCS)
+- **[FEATURE]** ⏳ Desvanecimiento elegante de controles incompatibles (RCS)
   - **Trigger:** Cuando usuario selecciona "Texto"
   - **Comportamiento:**
     - ❌ Desvanece sección "Multimedia" (imagen, video, audio, archivo)
@@ -50,8 +50,8 @@
     - ✅ Mantiene visible "Acciones"
     - ✅ Mantiene visible "Sugerencias"
   - **Razón:** Texto y multimedia son mutuamente excluyentes en RCS
-  - Transición suave con fade-out/fade-in
-  - Estados de UI claros y sin ambigüedades
+  - ⏳ Transición suave con fade-out/fade-in
+  - ⏳ Estados de UI claros y sin ambigüedades
 
 ### 🎯 Objetivos de Fidelidad
 
