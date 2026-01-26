@@ -548,6 +548,203 @@
     color: var(--color-gray-500);
 }
 
+/* ==========================================================================
+   Media Source Field (URL/File Upload)
+   ========================================================================== */
+
+.media-source-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+}
+
+.media-source-tabs {
+    display: flex;
+    gap: var(--spacing-1);
+    background: var(--color-gray-100);
+    padding: 4px;
+    border-radius: var(--radius-md);
+}
+
+.media-source-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-1);
+    padding: var(--spacing-2) var(--spacing-3);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-gray-600);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.media-source-tab:hover {
+    color: var(--color-gray-800);
+}
+
+.media-source-tab.active {
+    background: var(--color-white);
+    color: var(--color-primary);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.media-source-tab svg {
+    flex-shrink: 0;
+}
+
+.media-source-content {
+    position: relative;
+}
+
+.media-source-panel {
+    display: none;
+}
+
+.media-source-panel.active {
+    display: block;
+}
+
+.media-url-input {
+    width: 100%;
+}
+
+.media-file-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 140px;
+    padding: var(--spacing-4);
+    background: var(--color-gray-50);
+    border: 2px dashed var(--color-gray-300);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.media-file-dropzone:hover,
+.media-file-dropzone.dragover {
+    background: var(--color-primary-light, #EBF4FF);
+    border-color: var(--color-primary);
+}
+
+.media-file-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-2);
+    color: var(--color-gray-500);
+    text-align: center;
+}
+
+.media-file-placeholder svg {
+    color: var(--color-gray-400);
+}
+
+.media-file-placeholder span {
+    font-size: var(--font-size-sm);
+}
+
+.media-file-formats {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+}
+
+.media-file-preview {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-2);
+    position: relative;
+    width: 100%;
+}
+
+.media-file-preview img,
+.media-file-preview video {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: var(--radius-md);
+    object-fit: contain;
+}
+
+.media-file-preview audio {
+    width: 100%;
+}
+
+.media-file-name {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-600);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.media-file-remove {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: 50%;
+    color: var(--color-gray-500);
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all var(--transition-base);
+}
+
+.media-file-remove:hover {
+    background: #FEE2E2;
+    border-color: #FECACA;
+    color: #EF4444;
+}
+
+.media-file-remove svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] .media-source-tabs {
+    background: var(--color-gray-800);
+}
+
+[data-theme="dark"] .media-source-tab {
+    color: var(--color-gray-400);
+}
+
+[data-theme="dark"] .media-source-tab.active {
+    background: var(--color-gray-700);
+    color: var(--color-primary);
+}
+
+[data-theme="dark"] .media-file-dropzone {
+    background: var(--color-gray-800);
+    border-color: var(--color-gray-600);
+}
+
+[data-theme="dark"] .media-file-dropzone:hover,
+[data-theme="dark"] .media-file-dropzone.dragover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: var(--color-primary);
+}
+
+[data-theme="dark"] .media-file-remove {
+    background: var(--color-gray-700);
+    border-color: var(--color-gray-600);
+}
+
 /* Button List Builder */
 .button-list-builder {
     display: flex;

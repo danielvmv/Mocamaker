@@ -317,6 +317,10 @@ const Constructor = (function() {
                 inputHtml = renderRcsCarouselBuilder(field);
                 break;
 
+            case 'media_source':
+                inputHtml = renderMediaSourceField(field);
+                break;
+
             default:
                 inputHtml = `<input type="text" id="field-${field.name}" name="${field.name}">`;
         }
@@ -361,6 +365,81 @@ const Constructor = (function() {
                     </svg>
                     Agregar botón (${state.buttonsList.length}/${field.max || 3})
                 </button>
+            </div>
+        `;
+    }
+
+    /**
+     * Render media source field (URL or local file)
+     */
+    function renderMediaSourceField(field) {
+        const mediaTypeLabels = {
+            image: 'imagen',
+            video: 'video',
+            audio: 'audio'
+        };
+        const label = mediaTypeLabels[field.mediaType] || 'archivo';
+
+        return `
+            <div class="media-source-field" data-media-type="${field.mediaType}">
+                <div class="media-source-tabs">
+                    <button type="button" class="media-source-tab active" data-source="url">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                        </svg>
+                        URL
+                    </button>
+                    <button type="button" class="media-source-tab" data-source="file">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        Archivo local
+                    </button>
+                </div>
+                <div class="media-source-content">
+                    <div class="media-source-panel active" data-panel="url">
+                        <input type="url"
+                               id="field-${field.name}"
+                               name="${field.name}"
+                               class="media-url-input"
+                               placeholder="${field.placeholder || ''}"
+                               ${field.required ? 'required' : ''}>
+                    </div>
+                    <div class="media-source-panel" data-panel="file">
+                        <div class="media-file-dropzone" data-accept="${field.accept}">
+                            <input type="file"
+                                   id="field-${field.name}-file"
+                                   name="${field.name}-file"
+                                   class="media-file-input"
+                                   accept="${field.accept}"
+                                   style="display: none;">
+                            <div class="media-file-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="17 8 12 3 7 8"/>
+                                    <line x1="12" y1="3" x2="12" y2="15"/>
+                                </svg>
+                                <span>Arrastra o haz clic para seleccionar ${label}</span>
+                                <span class="media-file-formats">${field.accept.split(',').map(f => f.split('/')[1]).join(', ').toUpperCase()}</span>
+                            </div>
+                            <div class="media-file-preview" style="display: none;">
+                                ${field.mediaType === 'image' ? '<img src="" alt="Preview">' : ''}
+                                ${field.mediaType === 'video' ? '<video src="" controls></video>' : ''}
+                                ${field.mediaType === 'audio' ? '<audio src="" controls></audio>' : ''}
+                                <button type="button" class="media-file-remove">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"/>
+                                        <line x1="6" y1="6" x2="18" y2="18"/>
+                                    </svg>
+                                </button>
+                                <span class="media-file-name"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
     }
@@ -582,6 +661,9 @@ const Constructor = (function() {
 
         // RCS carousel builder
         setupRcsCarouselListeners();
+
+        // Media source (URL/File) fields
+        setupMediaSourceListeners();
     }
 
     /**
@@ -914,6 +996,174 @@ const Constructor = (function() {
             builder.outerHTML = renderRcsCarouselBuilder(field);
             setupRcsCarouselListeners();
         }
+    }
+
+    /**
+     * Setup media source (URL/File) listeners
+     */
+    function setupMediaSourceListeners() {
+        const mediaFields = elements.dynamicFields.querySelectorAll('.media-source-field');
+        if (!mediaFields.length) return;
+
+        mediaFields.forEach(field => {
+            const tabs = field.querySelectorAll('.media-source-tab');
+            const panels = field.querySelectorAll('.media-source-panel');
+            const urlInput = field.querySelector('.media-url-input');
+            const fileInput = field.querySelector('.media-file-input');
+            const dropzone = field.querySelector('.media-file-dropzone');
+            const placeholder = field.querySelector('.media-file-placeholder');
+            const preview = field.querySelector('.media-file-preview');
+            const removeBtn = field.querySelector('.media-file-remove');
+            const fileNameSpan = field.querySelector('.media-file-name');
+            const mediaType = field.dataset.mediaType;
+
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const source = tab.dataset.source;
+
+                    // Update tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    // Update panels
+                    panels.forEach(p => {
+                        p.classList.toggle('active', p.dataset.panel === source);
+                    });
+
+                    // Update required state
+                    if (source === 'url') {
+                        urlInput.setAttribute('required', '');
+                    } else {
+                        urlInput.removeAttribute('required');
+                    }
+                });
+            });
+
+            // Dropzone click
+            if (dropzone) {
+                dropzone.addEventListener('click', (e) => {
+                    if (e.target !== removeBtn && !removeBtn.contains(e.target)) {
+                        fileInput.click();
+                    }
+                });
+
+                // Drag and drop
+                dropzone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropzone.classList.add('dragover');
+                });
+
+                dropzone.addEventListener('dragleave', () => {
+                    dropzone.classList.remove('dragover');
+                });
+
+                dropzone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropzone.classList.remove('dragover');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        handleMediaFile(files[0], field, mediaType);
+                    }
+                });
+            }
+
+            // File input change
+            if (fileInput) {
+                fileInput.addEventListener('change', (e) => {
+                    if (e.target.files.length > 0) {
+                        handleMediaFile(e.target.files[0], field, mediaType);
+                    }
+                });
+            }
+
+            // Remove button
+            if (removeBtn) {
+                removeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    clearMediaFile(field, urlInput);
+                });
+            }
+        });
+    }
+
+    /**
+     * Handle media file selection
+     */
+    function handleMediaFile(file, fieldContainer, mediaType) {
+        const urlInput = fieldContainer.querySelector('.media-url-input');
+        const placeholder = fieldContainer.querySelector('.media-file-placeholder');
+        const preview = fieldContainer.querySelector('.media-file-preview');
+        const fileNameSpan = fieldContainer.querySelector('.media-file-name');
+
+        // Validate file type
+        const accept = fieldContainer.querySelector('.media-file-dropzone').dataset.accept;
+        const allowedTypes = accept.split(',');
+        if (!allowedTypes.some(type => file.type.match(type.replace('*', '.*')))) {
+            alert('Formato de archivo no soportado. Formatos permitidos: ' + accept);
+            return;
+        }
+
+        // Validate file size (max 10MB for images, 50MB for video/audio)
+        const maxSize = mediaType === 'image' ? 10 * 1024 * 1024 : 50 * 1024 * 1024;
+        if (file.size > maxSize) {
+            const maxMB = maxSize / (1024 * 1024);
+            alert(`El archivo es muy grande. Máximo ${maxMB}MB.`);
+            return;
+        }
+
+        // Read file and create base64
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const base64 = e.target.result;
+
+            // Update preview
+            if (mediaType === 'image') {
+                preview.querySelector('img').src = base64;
+            } else if (mediaType === 'video') {
+                preview.querySelector('video').src = base64;
+            } else if (mediaType === 'audio') {
+                preview.querySelector('audio').src = base64;
+            }
+
+            fileNameSpan.textContent = file.name;
+            placeholder.style.display = 'none';
+            preview.style.display = 'flex';
+
+            // Store in form data (use the url field)
+            urlInput.value = base64;
+            state.formData[urlInput.name] = base64;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    /**
+     * Clear media file selection
+     */
+    function clearMediaFile(fieldContainer, urlInput) {
+        const fileInput = fieldContainer.querySelector('.media-file-input');
+        const placeholder = fieldContainer.querySelector('.media-file-placeholder');
+        const preview = fieldContainer.querySelector('.media-file-preview');
+        const mediaType = fieldContainer.dataset.mediaType;
+
+        // Clear file input
+        fileInput.value = '';
+
+        // Clear preview
+        if (mediaType === 'image') {
+            preview.querySelector('img').src = '';
+        } else if (mediaType === 'video') {
+            preview.querySelector('video').src = '';
+        } else if (mediaType === 'audio') {
+            preview.querySelector('audio').src = '';
+        }
+
+        placeholder.style.display = 'flex';
+        preview.style.display = 'none';
+
+        // Clear form data
+        urlInput.value = '';
+        state.formData[urlInput.name] = '';
     }
 
     /**

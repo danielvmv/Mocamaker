@@ -616,12 +616,14 @@ const MessageTypes = (function() {
             name: 'Imagen',
             icon: '🖼️',
             category: 'media',
-            description: 'Imagen JPEG/PNG/GIF hasta 100MB',
+            description: 'Imagen JPEG/PNG/GIF/WebP',
             fields: [
                 {
                     name: 'url',
-                    label: 'URL de la imagen',
-                    type: 'url',
+                    label: 'Imagen',
+                    type: 'media_source',
+                    mediaType: 'image',
+                    accept: 'image/jpeg,image/png,image/gif,image/webp',
                     placeholder: 'https://ejemplo.com/imagen.jpg',
                     required: true
                 },
@@ -647,21 +649,23 @@ const MessageTypes = (function() {
             name: 'Video',
             icon: '🎬',
             category: 'media',
-            description: 'Video H.264 hasta 100MB',
+            description: 'Video MP4/WebM',
             fields: [
                 {
                     name: 'url',
-                    label: 'URL del video',
-                    type: 'url',
+                    label: 'Video',
+                    type: 'media_source',
+                    mediaType: 'video',
+                    accept: 'video/mp4,video/webm,video/quicktime',
                     placeholder: 'https://ejemplo.com/video.mp4',
                     required: true
                 },
                 {
                     name: 'thumbnailUrl',
-                    label: 'URL miniatura',
+                    label: 'URL miniatura (opcional)',
                     type: 'url',
                     placeholder: 'https://ejemplo.com/thumb.jpg',
-                    required: true
+                    required: false
                 },
                 {
                     name: 'suggestions',
@@ -678,12 +682,14 @@ const MessageTypes = (function() {
             name: 'Audio',
             icon: '🎵',
             category: 'media',
-            description: 'Audio MP3/AAC/OGG',
+            description: 'Audio MP3/AAC/OGG/WAV',
             fields: [
                 {
                     name: 'url',
-                    label: 'URL del audio',
-                    type: 'url',
+                    label: 'Audio',
+                    type: 'media_source',
+                    mediaType: 'audio',
+                    accept: 'audio/mpeg,audio/mp3,audio/ogg,audio/wav,audio/aac',
                     placeholder: 'https://ejemplo.com/audio.mp3',
                     required: true
                 },

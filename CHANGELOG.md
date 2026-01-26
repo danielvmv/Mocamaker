@@ -41,17 +41,29 @@
   - ✅ Estado del mockup persistente entre cambios
 
 #### Controles Contextuales Inteligentes
-- **[FEATURE]** ⏳ Desvanecimiento elegante de controles incompatibles (RCS)
+- **[FEATURE]** ✅ Desvanecimiento elegante de controles incompatibles (RCS)
   - **Trigger:** Cuando usuario selecciona "Texto"
   - **Comportamiento:**
     - ❌ Desvanece sección "Multimedia" (imagen, video, audio, archivo)
-    - ❌ Desvanece "Rich Card"
-    - ❌ Desvanece "Carrusel"
+    - ❌ Desvanece "Rich Card" y "Carrusel"
     - ✅ Mantiene visible "Acciones"
     - ✅ Mantiene visible "Sugerencias"
   - **Razón:** Texto y multimedia son mutuamente excluyentes en RCS
-  - ⏳ Transición suave con fade-out/fade-in
-  - ⏳ Estados de UI claros y sin ambigüedades
+  - ✅ Transición suave con fade-out/fade-in (opacity + scale)
+  - ✅ Estados de UI claros con indicador "(no disponible)"
+
+#### Carga de Multimedia Local
+- **[FEATURE]** ✅ Selector de archivos local para multimedia (RCS)
+  - ✅ Soporte para URL y archivo local en el mismo control
+  - ✅ Interfaz con tabs para alternar entre URL y archivo
+  - ✅ Drag & drop de archivos
+  - ✅ Preview en tiempo real (imagen, video, audio)
+  - ✅ Formatos soportados:
+    - Imagen: JPEG, PNG, GIF, WebP
+    - Video: MP4, WebM, QuickTime
+    - Audio: MP3, AAC, OGG, WAV
+  - ✅ Validación de tamaño (10MB imágenes, 50MB video/audio)
+  - ✅ Soporte Dark Mode
 
 ### 🎯 Objetivos de Fidelidad
 
