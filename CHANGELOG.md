@@ -26,7 +26,7 @@
 
 ---
 
-## [v2.1.1] - En Desarrollo
+## [v2.1.1] - Marzo 2025
 
 ### 🐛 Corrección de Bugs
 
@@ -61,7 +61,7 @@
 
 ---
 
-## [v2.1.0] - En Desarrollo
+## [v2.1.0] - Enero 2025
 
 ### 🎨 Theming
 - **[FEATURE]** ✅ Implementación de Dark Mode/Light Mode
@@ -141,7 +141,7 @@
 
 ---
 
-## [v2.0.0] - Versión Actual
+## [v2.0.0] - Diciembre 2024
 
 ### Características Base
 - Generador de mockups para RCS y WhatsApp
@@ -168,9 +168,12 @@
 - [x] Validar comportamiento de upload de imágenes
 - [x] Testing de dark/light mode en diferentes dispositivos
 - [x] Verificar que no hay desplazamiento al agregar/eliminar controles en builders
+- [x] Exportación GIF animado funcional
+- [x] Deselección de tipos de mensaje
+- [x] Inicio limpio sin datos de sesión anterior (nombre/avatar)
 
 ---
 
 **Última actualización:** Marzo 2025
 **Responsable:** Daniel Villanueva
-**Proyecto:** Mocamaker v2.1 - Mockups Conversacionales
+**Proyecto:** Mocamaker v2.1.2 - Mockups Conversacionales
