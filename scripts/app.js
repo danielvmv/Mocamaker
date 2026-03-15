@@ -79,6 +79,7 @@
             // Actions
             clearBtn: document.getElementById('clear-btn'),
             downloadBtn: document.getElementById('download-btn'),
+            downloadMenu: document.getElementById('download-menu'),
 
             // API Key
             apiKeyToggle: document.getElementById('api-key-toggle'),
@@ -116,19 +117,11 @@
             AIGenerator.setApiKey(savedKey);
         }
 
-        // Load brand name
-        const savedBrandName = localStorage.getItem(STORAGE_KEYS.BRAND_NAME);
-        if (savedBrandName) {
-            state.brandName = savedBrandName;
-            elements.brandNameInput.value = savedBrandName;
-        }
-
-        // Load avatar
-        const savedAvatar = localStorage.getItem(STORAGE_KEYS.AVATAR);
-        if (savedAvatar) {
-            state.brandAvatar = savedAvatar;
-            updateAvatarPreview(savedAvatar);
-        }
+        // Brand name and avatar: intentionally NOT restored from localStorage
+        // App should start fresh with default values each session
+        // Clear any previously saved brand data
+        localStorage.removeItem(STORAGE_KEYS.BRAND_NAME);
+        localStorage.removeItem(STORAGE_KEYS.AVATAR);
     }
 
     /**
@@ -175,7 +168,26 @@
 
         // Actions
         elements.clearBtn.addEventListener('click', handleClear);
-        elements.downloadBtn.addEventListener('click', handleDownload);
+        // Download dropdown
+        elements.downloadBtn.addEventListener('click', toggleDownloadMenu);
+        elements.downloadMenu.querySelectorAll('.download-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const format = option.dataset.format;
+                hideDownloadMenu();
+                if (format === 'html') {
+                    handleDownloadHTML();
+                } else if (format === 'gif') {
+                    handleDownloadGIF();
+                }
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.download-dropdown')) {
+                hideDownloadMenu();
+            }
+        });
 
         // API Key modal
         elements.apiKeyToggle.addEventListener('click', () => {
@@ -405,9 +417,25 @@
     }
 
     /**
-     * Handle download
+     * Toggle download dropdown menu
      */
-    function handleDownload() {
+    function toggleDownloadMenu(e) {
+        e.stopPropagation();
+        if (state.messages.length === 0) return;
+        elements.downloadMenu.classList.toggle('hidden');
+    }
+
+    /**
+     * Hide download dropdown menu
+     */
+    function hideDownloadMenu() {
+        elements.downloadMenu.classList.add('hidden');
+    }
+
+    /**
+     * Handle download as HTML
+     */
+    function handleDownloadHTML() {
         if (state.messages.length === 0) return;
 
         const renderOptions = {
@@ -428,6 +456,141 @@
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+    }
+
+    /**
+     * Handle download as animated GIF
+     */
+    async function handleDownloadGIF() {
+        if (state.messages.length === 0) return;
+
+        // Check if libraries are loaded
+        if (typeof html2canvas === 'undefined' || typeof GIF === 'undefined') {
+            alert('Error: Las librerías de exportación no están cargadas. Por favor recarga la página.');
+            return;
+        }
+
+        // Show progress modal
+        const progressOverlay = document.createElement('div');
+        progressOverlay.className = 'gif-progress-overlay';
+        progressOverlay.innerHTML = `
+            <div class="gif-progress-modal">
+                <div class="gif-progress-title">Generando GIF...</div>
+                <div class="gif-progress-bar-container">
+                    <div class="gif-progress-bar" id="gif-progress-bar"></div>
+                </div>
+                <div class="gif-progress-text" id="gif-progress-text">Preparando frames...</div>
+            </div>
+        `;
+        document.body.appendChild(progressOverlay);
+
+        const progressBar = document.getElementById('gif-progress-bar');
+        const progressText = document.getElementById('gif-progress-text');
+
+        try {
+            const renderOptions = {
+                brandName: state.brandName,
+                brandAvatar: state.brandAvatar,
+                os: state.os
+            };
+
+            // Create a temporary container for rendering frames
+            const tempContainer = document.createElement('div');
+            tempContainer.style.cssText = 'position: absolute; left: -9999px; top: 0; width: 400px;';
+            document.body.appendChild(tempContainer);
+
+            // Copy styles to temp container
+            const mockupPreviewClone = elements.mockupPreview.cloneNode(false);
+            mockupPreviewClone.className = 'mockup-preview';
+            tempContainer.appendChild(mockupPreviewClone);
+
+            // Create GIF encoder (worker served locally to avoid CORS)
+            const gif = new GIF({
+                workers: 2,
+                quality: 10,
+                width: 400,
+                height: 600,
+                workerScript: '/scripts/gif.worker.js'
+            });
+
+            const totalFrames = state.messages.length + 2; // +1 for empty state, +1 for final pause
+            let currentFrame = 0;
+
+            // Helper function to capture frame
+            async function captureFrame(messagesSubset, delay = 800) {
+                const html = messagesSubset.length === 0
+                    ? Renderer.renderEmpty(state.platform, renderOptions)
+                    : Renderer.renderFull(messagesSubset, state.platform, renderOptions);
+
+                mockupPreviewClone.innerHTML = html;
+
+                // Wait for images to load
+                const images = mockupPreviewClone.querySelectorAll('img');
+                await Promise.all(Array.from(images).map(img => {
+                    if (img.complete) return Promise.resolve();
+                    return new Promise(resolve => {
+                        img.onload = resolve;
+                        img.onerror = resolve;
+                    });
+                }));
+
+                // Capture with html2canvas
+                const canvas = await html2canvas(mockupPreviewClone, {
+                    backgroundColor: state.platform === 'whatsapp' ? '#ECE5DD' : '#FFFFFF',
+                    scale: 1,
+                    width: 400,
+                    height: 600,
+                    useCORS: true
+                });
+
+                gif.addFrame(canvas, { delay: delay });
+                currentFrame++;
+
+                const progress = Math.round((currentFrame / totalFrames) * 100);
+                progressBar.style.width = progress + '%';
+                progressText.textContent = `Capturando frame ${currentFrame} de ${totalFrames}...`;
+            }
+
+            // Capture empty state
+            await captureFrame([], 1000);
+
+            // Capture each message being added
+            for (let i = 0; i < state.messages.length; i++) {
+                const messagesSubset = state.messages.slice(0, i + 1);
+                const isLast = i === state.messages.length - 1;
+                await captureFrame(messagesSubset, isLast ? 2000 : 800);
+            }
+
+            progressText.textContent = 'Generando archivo GIF...';
+
+            // Render GIF
+            gif.on('finished', function(blob) {
+                // Download the GIF
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `mocamaker-${state.platform}-${state.os}-${Date.now()}.gif`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                // Cleanup
+                document.body.removeChild(tempContainer);
+                document.body.removeChild(progressOverlay);
+            });
+
+            gif.on('progress', function(p) {
+                progressBar.style.width = (50 + p * 50) + '%';
+            });
+
+            gif.render();
+
+        } catch (error) {
+            console.error('GIF generation error:', error);
+            alert('Error al generar GIF: ' + error.message);
+            document.body.removeChild(progressOverlay);
+        }
     }
 
     /**

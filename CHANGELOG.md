@@ -1,5 +1,31 @@
 # CHANGELOG.md
 
+## [v2.1.2] - Marzo 2025
+
+### 🐛 Corrección de Bugs
+
+- **[BUGFIX]** ✅ Selector de tipo de mensaje ahora permite deselección
+  - Click en un tipo ya seleccionado lo deselecciona y retorna el formulario al estado inicial
+  - Funciona para todos los tipos de mensaje en secciones "Empresa" y "Usuario"
+  - El fade contextual de RCS se limpia correctamente al deseleccionar
+
+- **[BUGFIX]** ✅ La aplicación ahora inicia con valores predeterminados limpios
+  - El nombre de empresa inicia como "Mi Empresa" en cada sesión
+  - El avatar inicia vacío (sin imagen cargada)
+  - Las preferencias de tema, OS y API Key sí persisten entre sesiones
+
+### ✨ Nuevas Funcionalidades
+
+- **[FEATURE]** ✅ Exportación de mockup en formato GIF animado
+  - Nuevo dropdown en botón de descarga con opciones HTML y GIF
+  - El GIF reproduce los mensajes apareciendo secuencialmente
+  - Incluye frame inicial vacío y pausa extendida en el último mensaje
+  - Modal de progreso con barra de avance durante la generación
+  - Implementado con html2canvas + gif.js
+  - Worker de GIF servido localmente para evitar problemas de CORS
+
+---
+
 ## [v2.1.1] - En Desarrollo
 
 ### 🐛 Corrección de Bugs

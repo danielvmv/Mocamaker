@@ -1096,6 +1096,135 @@
     color: #059669;
 }
 
+/* Download Dropdown */
+.download-dropdown {
+    position: relative;
+}
+
+.download-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: var(--spacing-2);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    min-width: 200px;
+    z-index: 100;
+    overflow: hidden;
+    animation: dropdownIn 0.15s ease-out;
+}
+
+.download-dropdown-menu.hidden {
+    display: none;
+}
+
+@keyframes dropdownIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.download-option {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    width: 100%;
+    padding: var(--spacing-3) var(--spacing-4);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background var(--transition-base);
+    text-align: left;
+}
+
+.download-option:hover {
+    background: var(--bg-tertiary);
+}
+
+.download-option:first-child {
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.download-option-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.download-option-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.download-option-text strong {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.download-option-text small {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+}
+
+/* GIF Export Progress Modal */
+.gif-progress-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.gif-progress-modal {
+    background: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-6);
+    text-align: center;
+    min-width: 300px;
+    box-shadow: var(--shadow-xl);
+}
+
+.gif-progress-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-4);
+}
+
+.gif-progress-bar-container {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
+    height: 8px;
+    overflow: hidden;
+    margin-bottom: var(--spacing-3);
+}
+
+.gif-progress-bar {
+    background: linear-gradient(90deg, #10B981, #059669);
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: var(--radius-full);
+}
+
+.gif-progress-text {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
 /* Brand Editor */
 .brand-editor {
     display: flex;

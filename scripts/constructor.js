@@ -110,9 +110,15 @@ const Constructor = (function() {
     }
 
     /**
-     * Select a message type
+     * Select a message type (or deselect if clicking the same type)
      */
     function selectType(typeId, platform) {
+        // If clicking the same type that's already selected, deselect it
+        if (state.selectedType === typeId) {
+            resetForm();
+            return;
+        }
+
         // Update UI
         elements.typeSelector.querySelectorAll('.type-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.type === typeId);
