@@ -746,8 +746,10 @@ const MessageTypes = (function() {
             fields: [
                 {
                     name: 'mediaUrl',
-                    label: 'URL de imagen/video (opcional)',
-                    type: 'url',
+                    label: 'Imagen/Video (opcional)',
+                    type: 'media_source',
+                    mediaType: 'image',
+                    accept: 'image/jpeg,image/png,image/gif,image/webp',
                     placeholder: 'https://ejemplo.com/imagen.jpg',
                     required: false
                 },

@@ -968,3 +968,108 @@ body {
     border-style: solid;
     border-color: var(--color-primary);
 }
+
+/* Avatar Container */
+.avatar-container {
+    position: relative;
+    display: inline-block;
+}
+
+.avatar-remove-btn {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #EF4444;
+    border: 2px solid var(--bg-primary);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    z-index: 10;
+}
+
+.avatar-remove-btn svg {
+    width: 10px;
+    height: 10px;
+    color: white;
+}
+
+.avatar-remove-btn:hover {
+    background: #DC2626;
+    transform: scale(1.1);
+}
+
+.avatar-remove-btn.hidden {
+    display: none;
+}
+
+/* ==========================================================================
+   Message Delete Button
+   ========================================================================== */
+
+.wa-message-wrapper,
+.rcs-message-wrapper {
+    position: relative;
+}
+
+.message-delete-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(239, 68, 68, 0.9);
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    opacity: 0;
+    transition: all var(--transition-fast);
+    z-index: 10;
+}
+
+.wa-message-wrapper .message-delete-btn {
+    right: -36px;
+}
+
+.rcs-message-wrapper .message-delete-btn {
+    right: -36px;
+}
+
+/* For incoming messages, position on the left */
+.wa-message-wrapper:has(.wa-message--incoming) .message-delete-btn,
+.rcs-message-wrapper:has(.rcs-message--incoming) .message-delete-btn {
+    left: -36px;
+    right: auto;
+}
+
+.message-delete-btn svg {
+    width: 14px;
+    height: 14px;
+    color: white;
+}
+
+.message-delete-btn:hover {
+    background: #DC2626;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.wa-message-wrapper:hover .message-delete-btn,
+.rcs-message-wrapper:hover .message-delete-btn {
+    opacity: 1;
+}
+
+/* Adjust mockup container to allow space for delete buttons */
+.wa-chat,
+.rcs-chat {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+}

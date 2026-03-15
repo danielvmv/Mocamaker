@@ -9,9 +9,16 @@
 .main-content {
     display: grid;
     grid-template-columns: 420px 1fr;
+    grid-template-rows: 1fr;
     gap: 0;
     flex: 1;
     overflow: hidden;
+    min-height: 0; /* Critical: allows grid to shrink below content size */
+}
+
+.main-content > * {
+    min-height: 0; /* Critical: prevents grid children from forcing row expansion */
+    max-height: 100%;
 }
 
 @media (max-width: 1024px) {
@@ -320,6 +327,7 @@
     flex: 1;
     padding: var(--spacing-4);
     overflow-y: auto;
+    overflow-anchor: none; /* Prevent automatic scroll adjustment */
     gap: var(--spacing-4);
 }
 
@@ -786,6 +794,20 @@
     height: 16px;
 }
 
+.button-item-remove[disabled],
+.button-item-remove.card-remove--disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.button-item-remove[disabled]:hover,
+.button-item-remove.card-remove--disabled:hover {
+    background: transparent;
+    border-color: var(--color-gray-300);
+    color: var(--color-gray-400);
+}
+
 .add-button-btn {
     display: flex;
     align-items: center;
@@ -1140,6 +1162,7 @@
     justify-content: center;
     padding: var(--spacing-6);
     overflow: auto;
+    overflow-anchor: none; /* Prevent automatic scroll adjustment */
 }
 
 .mockup-preview {
@@ -1248,4 +1271,203 @@
 .mode-content::-webkit-scrollbar-thumb:hover,
 .preview-container::-webkit-scrollbar-thumb:hover {
     background: var(--color-gray-400);
+}
+
+/* ==========================================================================
+   RCS Suggestions Builder
+   ========================================================================== */
+
+.rcs-suggestions-builder {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+}
+
+.rcs-suggestion-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
+    padding: var(--spacing-2);
+    background: var(--color-gray-50);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+}
+
+.suggestion-type-select {
+    flex: 0 0 auto;
+    min-width: 130px;
+}
+
+.suggestion-text-input {
+    flex: 1;
+    min-width: 120px;
+}
+
+.suggestion-url-input,
+.suggestion-phone-input {
+    flex: 1 1 100%;
+}
+
+/* ==========================================================================
+   RCS Carousel Builder
+   ========================================================================== */
+
+.rcs-carousel-builder {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+}
+
+.rcs-card-item {
+    background: var(--color-gray-50);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.rcs-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-2) var(--spacing-3);
+    background: var(--color-gray-100);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.rcs-card-number {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-700);
+}
+
+.rcs-card-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3);
+}
+
+/* Carousel Media Field */
+.carousel-media-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+}
+
+.carousel-media-label {
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    color: var(--color-gray-600);
+}
+
+.carousel-media-field .media-source-tabs {
+    background: var(--color-gray-200);
+}
+
+.carousel-media-field .media-source-tab {
+    padding: var(--spacing-1) var(--spacing-2);
+    font-size: var(--font-size-xs);
+}
+
+.carousel-file-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+    padding: var(--spacing-3);
+    background: var(--color-white);
+    border: 2px dashed var(--color-gray-300);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.carousel-file-dropzone:hover,
+.carousel-file-dropzone.dragover {
+    background: rgba(107, 70, 193, 0.05);
+    border-color: var(--color-primary);
+}
+
+.carousel-file-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-1);
+    color: var(--color-gray-400);
+    text-align: center;
+}
+
+.carousel-file-placeholder svg {
+    color: var(--color-gray-300);
+}
+
+.carousel-file-placeholder span {
+    font-size: var(--font-size-xs);
+}
+
+.carousel-file-preview {
+    display: none;
+    position: relative;
+    width: 100%;
+}
+
+.carousel-file-preview img {
+    width: 100%;
+    max-height: 120px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+}
+
+.carousel-file-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    color: var(--color-gray-600);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: all var(--transition-base);
+}
+
+.carousel-file-remove:hover {
+    background: #FEE2E2;
+    color: #EF4444;
+}
+
+.carousel-file-remove svg {
+    width: 12px;
+    height: 12px;
+}
+
+/* Dark Mode Support for Carousel */
+[data-theme="dark"] .rcs-card-item {
+    background: var(--color-gray-800);
+    border-color: var(--color-gray-700);
+}
+
+[data-theme="dark"] .rcs-card-header {
+    background: var(--color-gray-700);
+    border-color: var(--color-gray-600);
+}
+
+[data-theme="dark"] .carousel-media-field .media-source-tabs {
+    background: var(--color-gray-700);
+}
+
+[data-theme="dark"] .carousel-file-dropzone {
+    background: var(--color-gray-800);
+    border-color: var(--color-gray-600);
+}
+
+[data-theme="dark"] .carousel-file-dropzone:hover,
+[data-theme="dark"] .carousel-file-dropzone.dragover {
+    background: rgba(107, 70, 193, 0.15);
 }

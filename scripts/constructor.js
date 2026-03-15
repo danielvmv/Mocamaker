@@ -15,7 +15,10 @@ const Constructor = (function() {
         listSections: [{ title: '', items: [{ title: '', description: '' }] }],
         // RCS specific
         rcsSuggestions: [{ type: 'reply', text: '' }],
-        rcsCarouselCards: [{ mediaUrl: '', title: '', description: '', suggestions: [] }]
+        rcsCarouselCards: [
+            { mediaUrl: '', title: '', description: '', suggestions: [] },
+            { mediaUrl: '', title: '', description: '', suggestions: [] }
+        ]
     };
 
     // DOM Elements (cached on init)
@@ -120,7 +123,10 @@ const Constructor = (function() {
         state.buttonsList = [''];
         state.listSections = [{ title: '', items: [{ title: '', description: '' }] }];
         state.rcsSuggestions = [{ type: 'reply', text: '' }];
-        state.rcsCarouselCards = [{ mediaUrl: '', title: '', description: '', suggestions: [] }];
+        state.rcsCarouselCards = [
+            { mediaUrl: '', title: '', description: '', suggestions: [] },
+            { mediaUrl: '', title: '', description: '', suggestions: [] }
+        ];
 
         renderDynamicForm(typeId, platform);
         elements.addMessageBtn.disabled = false;
@@ -588,17 +594,22 @@ const Constructor = (function() {
 
     /**
      * Render RCS carousel cards builder
+     * Note: Base64 images are NOT included in HTML to avoid breaking the template.
+     * They are restored via JavaScript after rendering using restoreCarouselPreviews()
      */
     function renderRcsCarouselBuilder(field) {
         const maxCards = field.max || 10;
         const minCards = field.min || 2;
         return `
             <div class="rcs-carousel-builder" id="rcs-carousel-builder">
-                ${state.rcsCarouselCards.map((card, index) => `
-                    <div class="rcs-card-item" data-index="${index}">
+                ${state.rcsCarouselCards.map((card, index) => {
+                    const hasBase64 = card.mediaUrl && card.mediaUrl.startsWith('data:');
+                    const hasUrl = card.mediaUrl && !card.mediaUrl.startsWith('data:');
+                    return `
+                    <div class="rcs-card-item" data-index="${index}" data-has-base64="${hasBase64}">
                         <div class="rcs-card-header">
                             <span class="rcs-card-number">Tarjeta ${index + 1}</span>
-                            <button type="button" class="button-item-remove card-remove" ${state.rcsCarouselCards.length <= minCards ? 'disabled' : ''}>
+                            <button type="button" class="button-item-remove card-remove" data-card-index="${index}" data-min-cards="${minCards}">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <line x1="18" y1="6" x2="6" y2="18"/>
                                     <line x1="6" y1="6" x2="18" y2="18"/>
@@ -606,10 +617,56 @@ const Constructor = (function() {
                             </button>
                         </div>
                         <div class="rcs-card-fields">
-                            <input type="url"
-                                   class="card-media-input"
-                                   value="${card.mediaUrl || ''}"
-                                   placeholder="URL imagen (opcional)">
+                            <div class="carousel-media-field" data-card-index="${index}">
+                                <label class="carousel-media-label">Imagen (opcional)</label>
+                                <div class="media-source-tabs">
+                                    <button type="button" class="media-source-tab ${!hasBase64 ? 'active' : ''}" data-source="url">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                                        </svg>
+                                        URL
+                                    </button>
+                                    <button type="button" class="media-source-tab ${hasBase64 ? 'active' : ''}" data-source="file">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                            <polyline points="17 8 12 3 7 8"/>
+                                            <line x1="12" y1="3" x2="12" y2="15"/>
+                                        </svg>
+                                        Archivo
+                                    </button>
+                                </div>
+                                <div class="media-source-content">
+                                    <div class="media-source-panel ${!hasBase64 ? 'active' : ''}" data-panel="url">
+                                        <input type="url"
+                                               class="card-media-input card-media-url"
+                                               value="${hasUrl ? card.mediaUrl : ''}"
+                                               placeholder="https://ejemplo.com/imagen.jpg">
+                                    </div>
+                                    <div class="media-source-panel ${hasBase64 ? 'active' : ''}" data-panel="file">
+                                        <div class="carousel-file-dropzone">
+                                            <input type="file" class="carousel-file-input" accept="image/jpeg,image/png,image/gif,image/webp" style="display:none;">
+                                            <div class="carousel-file-placeholder" ${hasBase64 ? 'style="display:none;"' : ''}>
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                                    <polyline points="21 15 16 10 5 21"/>
+                                                </svg>
+                                                <span>Click o arrastra imagen</span>
+                                            </div>
+                                            <div class="carousel-file-preview" ${hasBase64 ? 'style="display:flex;"' : 'style="display:none;"'}>
+                                                <img src="" alt="Preview">
+                                                <button type="button" class="carousel-file-remove">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <line x1="18" y1="6" x2="6" y2="18"/>
+                                                        <line x1="6" y1="6" x2="18" y2="18"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <input type="text"
                                    class="card-title-input"
                                    value="${card.title || ''}"
@@ -620,7 +677,7 @@ const Constructor = (function() {
                                       maxlength="2000">${card.description || ''}</textarea>
                         </div>
                     </div>
-                `).join('')}
+                `;}).join('')}
                 <button type="button" class="add-button-btn" id="add-card-btn" ${state.rcsCarouselCards.length >= maxCards ? 'disabled' : ''}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="5" x2="12" y2="19"/>
@@ -630,6 +687,27 @@ const Constructor = (function() {
                 </button>
             </div>
         `;
+    }
+
+    /**
+     * Restore carousel image previews from state
+     * This is called after re-rendering to restore base64 images
+     */
+    function restoreCarouselPreviews() {
+        const builder = document.getElementById('rcs-carousel-builder');
+        if (!builder) return;
+
+        builder.querySelectorAll('.rcs-card-item[data-has-base64="true"]').forEach((item) => {
+            const index = parseInt(item.dataset.index);
+            const card = state.rcsCarouselCards[index];
+
+            if (card && card.mediaUrl && card.mediaUrl.startsWith('data:')) {
+                const previewImg = item.querySelector('.carousel-file-preview img');
+                if (previewImg) {
+                    previewImg.src = card.mediaUrl;
+                }
+            }
+        });
     }
 
     /**
@@ -659,7 +737,8 @@ const Constructor = (function() {
         // RCS suggestions builder
         setupRcsSuggestionsListeners();
 
-        // RCS carousel builder
+        // RCS carousel builder - restore previews first, then setup listeners
+        restoreCarouselPreviews();
         setupRcsCarouselListeners();
 
         // Media source (URL/File) fields
@@ -684,6 +763,10 @@ const Constructor = (function() {
         builder.querySelectorAll('.button-item-remove').forEach((btn, index) => {
             btn.addEventListener('click', () => {
                 if (state.buttonsList.length > 1) {
+                    // Remove focus to prevent browser scroll-to-focus behavior
+                    if (document.activeElement) {
+                        document.activeElement.blur();
+                    }
                     state.buttonsList.splice(index, 1);
                     rerenderButtonList();
                 }
@@ -695,6 +778,10 @@ const Constructor = (function() {
         if (addBtn) {
             addBtn.addEventListener('click', () => {
                 if (state.buttonsList.length < 3) {
+                    // Remove focus to prevent browser scroll-to-focus behavior
+                    if (document.activeElement) {
+                        document.activeElement.blur();
+                    }
                     state.buttonsList.push('');
                     rerenderButtonList();
                 }
@@ -706,6 +793,8 @@ const Constructor = (function() {
      * Re-render button list
      */
     function rerenderButtonList() {
+        const scrollPositions = preserveScrollPositions();
+
         const platform = window.Mocamaker?.state?.platform || 'whatsapp';
         const type = MessageTypes.getType(platform, state.selectedType);
         const field = type.fields.find(f => f.type === 'button_list');
@@ -715,6 +804,8 @@ const Constructor = (function() {
             builder.outerHTML = renderButtonListBuilder(field);
             setupButtonListListeners();
         }
+
+        restoreScrollPositions(scrollPositions);
     }
 
     /**
@@ -760,6 +851,10 @@ const Constructor = (function() {
                 const section = btn.closest('.list-section');
                 const sIndex = parseInt(section.dataset.section);
                 if (state.listSections.length > 1) {
+                    // Remove focus to prevent browser scroll-to-focus behavior
+                    if (document.activeElement) {
+                        document.activeElement.blur();
+                    }
                     state.listSections.splice(sIndex, 1);
                     rerenderListSections();
                 }
@@ -774,6 +869,10 @@ const Constructor = (function() {
                 const sIndex = parseInt(section.dataset.section);
                 const iIndex = parseInt(itemEl.dataset.item);
                 if (state.listSections[sIndex].items.length > 1) {
+                    // Remove focus to prevent browser scroll-to-focus behavior
+                    if (document.activeElement) {
+                        document.activeElement.blur();
+                    }
                     state.listSections[sIndex].items.splice(iIndex, 1);
                     rerenderListSections();
                 }
@@ -783,6 +882,10 @@ const Constructor = (function() {
         // Add item buttons
         builder.querySelectorAll('.add-item-btn').forEach((btn) => {
             btn.addEventListener('click', () => {
+                // Remove focus to prevent browser scroll-to-focus behavior
+                if (document.activeElement) {
+                    document.activeElement.blur();
+                }
                 const section = btn.closest('.list-section');
                 const sIndex = parseInt(section.dataset.section);
                 state.listSections[sIndex].items.push({ title: '', description: '' });
@@ -794,6 +897,10 @@ const Constructor = (function() {
         const addSectionBtn = document.getElementById('add-section-btn');
         if (addSectionBtn) {
             addSectionBtn.addEventListener('click', () => {
+                // Remove focus to prevent browser scroll-to-focus behavior
+                if (document.activeElement) {
+                    document.activeElement.blur();
+                }
                 state.listSections.push({ title: '', items: [{ title: '', description: '' }] });
                 rerenderListSections();
             });
@@ -804,6 +911,8 @@ const Constructor = (function() {
      * Re-render list sections
      */
     function rerenderListSections() {
+        const scrollPositions = preserveScrollPositions();
+
         const platform = window.Mocamaker?.state?.platform || 'whatsapp';
         const type = MessageTypes.getType(platform, state.selectedType);
         const field = type.fields.find(f => f.type === 'list_sections');
@@ -813,6 +922,8 @@ const Constructor = (function() {
             builder.outerHTML = renderListSectionsBuilder(field);
             setupListSectionsListeners();
         }
+
+        restoreScrollPositions(scrollPositions);
     }
 
     /**
@@ -827,6 +938,10 @@ const Constructor = (function() {
             const item = select.closest('.rcs-suggestion-item');
             const index = parseInt(item.dataset.index);
             select.addEventListener('change', (e) => {
+                // Remove focus to prevent browser scroll-to-focus behavior
+                if (document.activeElement) {
+                    document.activeElement.blur();
+                }
                 state.rcsSuggestions[index].type = e.target.value;
                 // Clear extra fields when type changes
                 delete state.rcsSuggestions[index].url;
@@ -867,6 +982,11 @@ const Constructor = (function() {
             const item = btn.closest('.rcs-suggestion-item');
             const index = parseInt(item.dataset.index);
             btn.addEventListener('click', () => {
+                // Remove focus to prevent browser scroll-to-focus behavior
+                if (document.activeElement) {
+                    document.activeElement.blur();
+                }
+
                 if (state.rcsSuggestions.length > 1) {
                     state.rcsSuggestions.splice(index, 1);
                     rerenderRcsSuggestions();
@@ -893,6 +1013,10 @@ const Constructor = (function() {
                 const maxSuggestions = field?.max || 11;
 
                 if (state.rcsSuggestions.length < maxSuggestions) {
+                    // Remove focus to prevent browser scroll-to-focus behavior
+                    if (document.activeElement) {
+                        document.activeElement.blur();
+                    }
                     state.rcsSuggestions.push({ type: 'reply', text: '' });
                     rerenderRcsSuggestions();
                 }
@@ -901,9 +1025,118 @@ const Constructor = (function() {
     }
 
     /**
+     * Scroll Lock System
+     *
+     * Prevents scroll displacement during DOM updates by:
+     * 1. Capturing scroll positions AND current overflow styles
+     * 2. Setting overflow: hidden to completely prevent any scroll
+     * 3. Restoring overflow and scroll positions after DOM updates
+     * 4. Using multiple restoration strategies (sync + RAF + timeout)
+     */
+    let scrollLockState = null;
+
+    function lockScroll() {
+        const modeContent = document.querySelector('.mode-content.active');
+        const previewContainer = document.querySelector('.preview-container');
+
+        // Capture current state
+        scrollLockState = {
+            modeContent: {
+                el: modeContent,
+                scrollTop: modeContent ? modeContent.scrollTop : 0,
+                overflow: modeContent ? modeContent.style.overflow : ''
+            },
+            preview: {
+                el: previewContainer,
+                scrollTop: previewContainer ? previewContainer.scrollTop : 0,
+                overflow: previewContainer ? previewContainer.style.overflow : ''
+            },
+            window: window.scrollY
+        };
+
+        // Lock scrolling by setting overflow: hidden
+        if (modeContent) {
+            modeContent.style.overflow = 'hidden';
+        }
+        if (previewContainer) {
+            previewContainer.style.overflow = 'hidden';
+        }
+
+        return scrollLockState;
+    }
+
+    function unlockScroll() {
+        if (!scrollLockState) return;
+
+        const { modeContent, preview } = scrollLockState;
+
+        // Restore overflow styles
+        if (modeContent.el) {
+            modeContent.el.style.overflow = modeContent.overflow;
+        }
+        if (preview.el) {
+            preview.el.style.overflow = preview.overflow;
+        }
+
+        // Immediate scroll restoration
+        if (modeContent.el) {
+            modeContent.el.scrollTop = modeContent.scrollTop;
+        }
+        if (preview.el) {
+            preview.el.scrollTop = preview.scrollTop;
+        }
+        if (scrollLockState.window > 0) {
+            window.scrollTo(0, scrollLockState.window);
+        }
+
+        // Capture values for async restoration
+        const savedPositions = {
+            modeContentScroll: modeContent.scrollTop,
+            previewScroll: preview.scrollTop,
+            windowScroll: scrollLockState.window,
+            modeContentEl: modeContent.el,
+            previewEl: preview.el
+        };
+
+        // RAF restoration (catches browser layout recalculations)
+        requestAnimationFrame(() => {
+            if (savedPositions.modeContentEl) {
+                savedPositions.modeContentEl.scrollTop = savedPositions.modeContentScroll;
+            }
+            if (savedPositions.previewEl) {
+                savedPositions.previewEl.scrollTop = savedPositions.previewScroll;
+            }
+        });
+
+        // Timeout restoration (catches any delayed browser adjustments)
+        setTimeout(() => {
+            if (savedPositions.modeContentEl) {
+                savedPositions.modeContentEl.scrollTop = savedPositions.modeContentScroll;
+            }
+            if (savedPositions.previewEl) {
+                savedPositions.previewEl.scrollTop = savedPositions.previewScroll;
+            }
+        }, 0);
+
+        scrollLockState = null;
+    }
+
+    // Functions used by rerender methods
+    function preserveScrollPositions() {
+        return lockScroll();
+    }
+
+    function restoreScrollPositions() {
+        unlockScroll();
+    }
+
+    /**
      * Re-render RCS suggestions
      */
     function rerenderRcsSuggestions() {
+        // Preserve scroll positions
+        const scrollPositions = preserveScrollPositions();
+
         const platform = window.Mocamaker?.state?.platform || 'whatsapp';
         const type = MessageTypes.getType(platform, state.selectedType);
         const field = type?.fields.find(f => f.type === 'rcs_suggestions');
@@ -913,89 +1146,297 @@ const Constructor = (function() {
             builder.outerHTML = renderRcsSuggestionsBuilder(field);
             setupRcsSuggestionsListeners();
         }
+
+        // Restore scroll positions
+        restoreScrollPositions(scrollPositions);
     }
 
     /**
      * Setup RCS carousel builder listeners
+     * Uses event delegation for card removal to ensure correct index handling
      */
     function setupRcsCarouselListeners() {
         const builder = document.getElementById('rcs-carousel-builder');
         if (!builder) return;
 
-        // Card media inputs
-        builder.querySelectorAll('.card-media-input').forEach((input) => {
-            const item = input.closest('.rcs-card-item');
-            const index = parseInt(item.dataset.index);
-            input.addEventListener('input', (e) => {
-                state.rcsCarouselCards[index].mediaUrl = e.target.value;
-            });
+        const minCards = 2;
+        const maxCards = 10;
+
+        // Update visual state of all remove buttons based on current card count
+        updateAllRemoveButtonStates();
+
+        // EVENT DELEGATION for card removal - single listener on parent
+        // This ensures the index is read at click time, not captured in closure
+        builder.addEventListener('click', function(e) {
+            const removeBtn = e.target.closest('.card-remove');
+            if (!removeBtn) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Check if removal is allowed
+            if (state.rcsCarouselCards.length <= minCards) {
+                return;
+            }
+
+            // Get index from the button's data attribute at click time
+            const cardIndex = parseInt(removeBtn.getAttribute('data-card-index'), 10);
+
+            // Validate index
+            if (isNaN(cardIndex) || cardIndex < 0 || cardIndex >= state.rcsCarouselCards.length) {
+                return;
+            }
+
+            // Remove focus from button to prevent browser scroll-to-focus behavior
+            if (document.activeElement) {
+                document.activeElement.blur();
+            }
+
+            // Remove the card
+            state.rcsCarouselCards.splice(cardIndex, 1);
+            rerenderRcsCarousel();
         });
 
-        // Card title inputs
-        builder.querySelectorAll('.card-title-input').forEach((input) => {
-            const item = input.closest('.rcs-card-item');
-            const index = parseInt(item.dataset.index);
-            input.addEventListener('input', (e) => {
-                state.rcsCarouselCards[index].title = e.target.value;
-            });
-        });
+        // Setup input listeners for each card
+        builder.querySelectorAll('.rcs-card-item').forEach((cardItem) => {
+            const cardIndex = parseInt(cardItem.dataset.index);
 
-        // Card description inputs
-        builder.querySelectorAll('.card-desc-input').forEach((input) => {
-            const item = input.closest('.rcs-card-item');
-            const index = parseInt(item.dataset.index);
-            input.addEventListener('input', (e) => {
-                state.rcsCarouselCards[index].description = e.target.value;
-            });
-        });
+            // Input listeners for this card
+            const urlInput = cardItem.querySelector('.card-media-url');
+            const titleInput = cardItem.querySelector('.card-title-input');
+            const descInput = cardItem.querySelector('.card-desc-input');
 
-        // Remove card buttons
-        builder.querySelectorAll('.card-remove').forEach((btn) => {
-            const item = btn.closest('.rcs-card-item');
-            const index = parseInt(item.dataset.index);
-            btn.addEventListener('click', () => {
-                const platform = window.Mocamaker?.state?.platform || 'whatsapp';
-                const type = MessageTypes.getType(platform, state.selectedType);
-                const field = type?.fields.find(f => f.type === 'rcs_carousel_cards');
-                const minCards = field?.min || 2;
+            if (urlInput) {
+                urlInput.addEventListener('input', () => {
+                    state.rcsCarouselCards[cardIndex].mediaUrl = urlInput.value;
+                });
+            }
+            if (titleInput) {
+                titleInput.addEventListener('input', () => {
+                    state.rcsCarouselCards[cardIndex].title = titleInput.value;
+                });
+            }
+            if (descInput) {
+                descInput.addEventListener('input', () => {
+                    state.rcsCarouselCards[cardIndex].description = descInput.value;
+                });
+            }
 
-                if (state.rcsCarouselCards.length > minCards) {
-                    state.rcsCarouselCards.splice(index, 1);
-                    rerenderRcsCarousel();
+            // Tab switching
+            const mediaField = cardItem.querySelector('.carousel-media-field');
+            if (mediaField) {
+                const tabs = mediaField.querySelectorAll('.media-source-tab');
+                const panels = mediaField.querySelectorAll('.media-source-panel');
+
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const source = tab.dataset.source;
+                        tabs.forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        panels.forEach(p => p.classList.toggle('active', p.dataset.panel === source));
+                    });
+                });
+
+                // File dropzone
+                const dropzone = mediaField.querySelector('.carousel-file-dropzone');
+                const fileInput = mediaField.querySelector('.carousel-file-input');
+                const placeholder = mediaField.querySelector('.carousel-file-placeholder');
+                const preview = mediaField.querySelector('.carousel-file-preview');
+                const fileRemoveBtn = mediaField.querySelector('.carousel-file-remove');
+
+                if (dropzone && fileInput) {
+                    dropzone.addEventListener('click', (e) => {
+                        if (!e.target.closest('.carousel-file-remove')) {
+                            fileInput.click();
+                        }
+                    });
+
+                    dropzone.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        dropzone.classList.add('dragover');
+                    });
+
+                    dropzone.addEventListener('dragleave', () => {
+                        dropzone.classList.remove('dragover');
+                    });
+
+                    dropzone.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        dropzone.classList.remove('dragover');
+                        if (e.dataTransfer.files.length > 0) {
+                            handleCarouselCardFile(e.dataTransfer.files[0], cardIndex, mediaField);
+                        }
+                    });
+
+                    fileInput.addEventListener('change', () => {
+                        if (fileInput.files.length > 0) {
+                            handleCarouselCardFile(fileInput.files[0], cardIndex, mediaField);
+                        }
+                    });
                 }
-            });
+
+                if (fileRemoveBtn) {
+                    fileRemoveBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        state.rcsCarouselCards[cardIndex].mediaUrl = '';
+                        if (placeholder) placeholder.style.display = 'flex';
+                        if (preview) {
+                            preview.style.display = 'none';
+                            const img = preview.querySelector('img');
+                            if (img) img.src = '';
+                        }
+                        if (fileInput) fileInput.value = '';
+                    });
+                }
+            }
         });
 
         // Add card button
-        const addBtn = document.getElementById('add-card-btn');
+        const addBtn = builder.querySelector('#add-card-btn');
         if (addBtn) {
-            addBtn.addEventListener('click', () => {
-                const platform = window.Mocamaker?.state?.platform || 'whatsapp';
-                const type = MessageTypes.getType(platform, state.selectedType);
-                const field = type?.fields.find(f => f.type === 'rcs_carousel_cards');
-                const maxCards = field?.max || 10;
+            addBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
 
-                if (state.rcsCarouselCards.length < maxCards) {
-                    state.rcsCarouselCards.push({ mediaUrl: '', title: '', description: '', suggestions: [] });
-                    rerenderRcsCarousel();
+                if (state.rcsCarouselCards.length >= maxCards) return;
+
+                // Remove focus from button to prevent browser scroll-to-focus behavior
+                if (document.activeElement) {
+                    document.activeElement.blur();
                 }
+
+                state.rcsCarouselCards.push({ mediaUrl: '', title: '', description: '', suggestions: [] });
+                rerenderRcsCarousel();
             });
         }
+    }
+
+    /**
+     * Update visual state of all card remove buttons
+     */
+    function updateAllRemoveButtonStates() {
+        const builder = document.getElementById('rcs-carousel-builder');
+        if (!builder) return;
+
+        const minCards = 2;
+        const canRemove = state.rcsCarouselCards.length > minCards;
+
+        builder.querySelectorAll('.card-remove').forEach(btn => {
+            if (canRemove) {
+                btn.classList.remove('card-remove--disabled');
+                btn.removeAttribute('disabled');
+            } else {
+                btn.classList.add('card-remove--disabled');
+                btn.setAttribute('disabled', 'disabled');
+            }
+        });
+    }
+
+    /**
+     * Handle carousel card file upload
+     */
+    function handleCarouselCardFile(file, cardIndex, fieldContainer) {
+        const placeholder = fieldContainer.querySelector('.carousel-file-placeholder');
+        const preview = fieldContainer.querySelector('.carousel-file-preview');
+        const previewImg = preview.querySelector('img');
+
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            alert('Formato no soportado. Usa JPEG, PNG, GIF o WebP.');
+            return;
+        }
+
+        // Validate file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            alert('La imagen es muy grande. Máximo 10MB.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const base64 = e.target.result;
+            // Store in state immediately
+            state.rcsCarouselCards[cardIndex].mediaUrl = base64;
+            // Update UI
+            previewImg.src = base64;
+            placeholder.style.display = 'none';
+            preview.style.display = 'flex';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    /**
+     * Sync carousel card values from DOM to state before re-render
+     */
+    function syncCarouselStateFromDOM() {
+        const builder = document.getElementById('rcs-carousel-builder');
+        if (!builder) return;
+
+        builder.querySelectorAll('.rcs-card-item').forEach((item) => {
+            const index = parseInt(item.dataset.index);
+            if (index >= 0 && index < state.rcsCarouselCards.length) {
+                // Get URL input value
+                const urlInput = item.querySelector('.card-media-url');
+                if (urlInput && urlInput.value && !urlInput.value.startsWith('data:')) {
+                    state.rcsCarouselCards[index].mediaUrl = urlInput.value;
+                }
+
+                // Check for file preview (base64) - use getAttribute to get raw value
+                const previewImg = item.querySelector('.carousel-file-preview img');
+                if (previewImg) {
+                    const imgSrc = previewImg.getAttribute('src') || previewImg.src;
+                    if (imgSrc && imgSrc.startsWith('data:')) {
+                        state.rcsCarouselCards[index].mediaUrl = imgSrc;
+                    }
+                }
+
+                const titleInput = item.querySelector('.card-title-input');
+                if (titleInput) {
+                    state.rcsCarouselCards[index].title = titleInput.value;
+                }
+
+                const descInput = item.querySelector('.card-desc-input');
+                if (descInput) {
+                    state.rcsCarouselCards[index].description = descInput.value;
+                }
+            }
+        });
     }
 
     /**
      * Re-render RCS carousel
      */
     function rerenderRcsCarousel() {
+        // Preserve scroll positions
+        const scrollPositions = preserveScrollPositions();
+
+        // First, sync current DOM values to state to preserve user input
+        syncCarouselStateFromDOM();
+
         const platform = window.Mocamaker?.state?.platform || 'whatsapp';
         const type = MessageTypes.getType(platform, state.selectedType);
         const field = type?.fields.find(f => f.type === 'rcs_carousel_cards');
 
-        const builder = document.getElementById('rcs-carousel-builder');
-        if (builder && field) {
-            builder.outerHTML = renderRcsCarouselBuilder(field);
+        const container = document.getElementById('rcs-carousel-builder');
+        if (container && field) {
+            // Create new content
+            const temp = document.createElement('div');
+            temp.innerHTML = renderRcsCarouselBuilder(field);
+            const newBuilder = temp.firstElementChild;
+
+            // Replace old with new
+            container.parentNode.replaceChild(newBuilder, container);
+
+            // Restore base64 image previews (not included in HTML to avoid breaking template)
+            restoreCarouselPreviews();
+
+            // Setup listeners on new element
             setupRcsCarouselListeners();
         }
+
+        // Restore scroll positions
+        restoreScrollPositions(scrollPositions);
     }
 
     /**
@@ -1235,22 +1676,32 @@ const Constructor = (function() {
      * Reset the form
      */
     function resetForm() {
+        // Reset all state
+        state.selectedType = null;
         state.formData = {};
         state.buttonsList = [''];
         state.listSections = [{ title: '', items: [{ title: '', description: '' }] }];
         state.rcsSuggestions = [{ type: 'reply', text: '' }];
-        state.rcsCarouselCards = [{ mediaUrl: '', title: '', description: '', suggestions: [] }];
+        state.rcsCarouselCards = [
+            { mediaUrl: '', title: '', description: '', suggestions: [] },
+            { mediaUrl: '', title: '', description: '', suggestions: [] }
+        ];
 
-        // Clear form inputs
-        elements.dynamicFields.querySelectorAll('input, textarea, select').forEach(input => {
-            input.value = '';
+        // Remove active state from all type buttons
+        elements.typeSelector.querySelectorAll('.type-btn').forEach(btn => {
+            btn.classList.remove('active');
         });
 
-        // Re-render special fields
-        if (state.selectedType) {
-            const platform = window.Mocamaker?.state?.platform || 'whatsapp';
-            renderDynamicForm(state.selectedType, platform);
-        }
+        // Remove faded state from all categories (RCS contextual fade)
+        elements.typeSelector.querySelectorAll('.type-category').forEach(cat => {
+            cat.classList.remove('type-category--faded');
+        });
+
+        // Reset dynamic fields to empty state
+        elements.dynamicFields.innerHTML = '<div class="empty-type-state"><p>Selecciona un tipo de mensaje para ver las opciones</p></div>';
+
+        // Disable add message button
+        elements.addMessageBtn.disabled = true;
     }
 
     /**
@@ -1274,7 +1725,10 @@ const Constructor = (function() {
         state.buttonsList = [''];
         state.listSections = [{ title: '', items: [{ title: '', description: '' }] }];
         state.rcsSuggestions = [{ type: 'reply', text: '' }];
-        state.rcsCarouselCards = [{ mediaUrl: '', title: '', description: '', suggestions: [] }];
+        state.rcsCarouselCards = [
+            { mediaUrl: '', title: '', description: '', suggestions: [] },
+            { mediaUrl: '', title: '', description: '', suggestions: [] }
+        ];
 
         elements.senderBtns.forEach(btn => {
             btn.classList.toggle('active', btn.dataset.sender === 'brand');

@@ -1,5 +1,40 @@
 # CHANGELOG.md
 
+## [v2.1.1] - En Desarrollo
+
+### 🐛 Corrección de Bugs
+
+- **[BUGFIX]** ✅ Corrección del desplazamiento no deseado al agregar/eliminar controles
+  - ✅ Nuevo sistema "Scroll Lock" que bloquea el scroll durante actualizaciones del DOM
+  - ✅ Prevención del comportamiento de scroll-to-focus del navegador
+  - ✅ Múltiples estrategias de restauración de posición (sync + RAF + timeout)
+  - ✅ Aplicado a todos los builders: Carrusel, Sugerencias RCS, Button List, List Sections
+
+### 🔧 Mejoras de UX
+
+- **[FEATURE]** ✅ Carga local de archivos en Rich Card y Carrusel (RCS)
+  - ✅ Rich Card: Opción de archivo local además de URL para imagen/video
+  - ✅ Carrusel: Cada tarjeta permite subir imagen desde archivo local
+  - ✅ Soporte drag & drop y click para seleccionar
+  - ✅ Preview en tiempo real de imágenes locales
+
+- **[FEATURE]** ✅ Gestión de foto de perfil de empresa
+  - ✅ Posibilidad de eliminar la foto de perfil una vez asignada
+  - ✅ Posibilidad de modificar/reemplazar la foto de perfil
+  - ✅ Botón de eliminar con confirmación visual
+
+- **[FEATURE]** ✅ Eliminación individual de mensajes
+  - ✅ Botón de eliminar visible al pasar el mouse sobre cada mensaje
+  - ✅ Eliminación individual sin afectar otros mensajes
+  - ✅ Diseño discreto que no interfiere con la vista del mockup
+
+- **[ENHANCEMENT]** ✅ Reset del formulario de controles
+  - ✅ Al agregar un mensaje, el menú de controles se reinicia al estado inicial
+  - ✅ Deselección automática del tipo de mensaje
+  - ✅ Feedback visual claro de que el mensaje fue agregado
+
+---
+
 ## [v2.1.0] - En Desarrollo
 
 ### 🎨 Theming
@@ -103,12 +138,13 @@
 - [ ] Verificar fidelidad visual iOS vs screenshots reales
 - [ ] Verificar fidelidad visual Android vs screenshots reales
 - [ ] Validar todas las combinaciones de controles RCS
-- [ ] Probar switching iOS/Android con contenido complejo
-- [ ] Validar comportamiento de upload de imágenes
-- [ ] Testing de dark/light mode en diferentes dispositivos
+- [x] Probar switching iOS/Android con contenido complejo
+- [x] Validar comportamiento de upload de imágenes
+- [x] Testing de dark/light mode en diferentes dispositivos
+- [x] Verificar que no hay desplazamiento al agregar/eliminar controles en builders
 
 ---
 
-**Última actualización:** Enero 2025  
-**Responsable:** Daniel Villanueva  
-**Proyecto:** Mocamaker v2.0 - Mockups Conversacionales
+**Última actualización:** Marzo 2025
+**Responsable:** Daniel Villanueva
+**Proyecto:** Mocamaker v2.1 - Mockups Conversacionales

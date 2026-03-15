@@ -74,6 +74,7 @@
             // Avatar
             avatarUpload: document.getElementById('avatar-upload'),
             avatarPreview: document.getElementById('avatar-preview'),
+            avatarRemoveBtn: document.getElementById('avatar-remove-btn'),
 
             // Actions
             clearBtn: document.getElementById('clear-btn'),
@@ -170,6 +171,7 @@
 
         // Avatar upload
         elements.avatarUpload.addEventListener('change', handleAvatarUpload);
+        elements.avatarRemoveBtn.addEventListener('click', handleAvatarRemove);
 
         // Actions
         elements.clearBtn.addEventListener('click', handleClear);
@@ -253,12 +255,24 @@
     }
 
     /**
+     * Handle avatar remove
+     */
+    function handleAvatarRemove() {
+        state.brandAvatar = null;
+        localStorage.removeItem(STORAGE_KEYS.AVATAR);
+        elements.avatarUpload.value = ''; // Reset file input
+        updateAvatarPreview(null);
+        renderPreview();
+    }
+
+    /**
      * Update avatar preview
      */
     function updateAvatarPreview(base64) {
         if (base64) {
             elements.avatarPreview.innerHTML = `<img src="${base64}" alt="Avatar">`;
             elements.avatarPreview.classList.add('avatar-upload-preview--has-image');
+            elements.avatarRemoveBtn.classList.remove('hidden');
         } else {
             elements.avatarPreview.innerHTML = `
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -268,6 +282,7 @@
                 </svg>
             `;
             elements.avatarPreview.classList.remove('avatar-upload-preview--has-image');
+            elements.avatarRemoveBtn.classList.add('hidden');
         }
     }
 
